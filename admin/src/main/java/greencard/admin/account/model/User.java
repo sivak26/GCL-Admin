@@ -1,29 +1,24 @@
 package greencard.admin.account.model;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
+import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "Admin")
 public class User {
-
+	 Date date= new Date();
+	 long time = date.getTime();
+	 Timestamp ts = new Timestamp(time);
+	 
 	private int userId;
 	private String email;
 	private String password;
 	private String firstName;
 	private String lastName;
 	private String role;
-	private Timestamp createdDate;
-	private int accountStatus;
-	private Timestamp lastLoginDate;
+	private Timestamp createdDate = ts;
+	private int accountStatus = 1;
+	private Timestamp lastLoginDate = ts;
+
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	public int getUserId() {
 		return userId;
 	}
@@ -95,4 +90,13 @@ public class User {
 	public void setLastLoginDate(Timestamp lastLoginDate) {
 		this.lastLoginDate = lastLoginDate;
 	}
+
+	@Override
+	public String toString() {
+		return "User [date=" + date + ", time=" + time + ", ts=" + ts + ", userId=" + userId + ", email=" + email
+				+ ", password=" + password + ", firstName=" + firstName + ", lastName=" + lastName + ", role=" + role
+				+ ", createdDate=" + createdDate + ", accountStatus=" + accountStatus + ", lastLoginDate="
+				+ lastLoginDate + "]";
+	}
+	
 }

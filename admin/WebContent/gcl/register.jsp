@@ -14,7 +14,8 @@
 		Last Name: 	<input type="text" name="lastName" required="required"><br>
 		Email: 		<input type="text" name="email" required="required"><br>
 		Password: 	<input type="password" name="password" required="required"><br>
-		Role:		<select>
+		Role:		<select name="role">
+						<option value="">Select The Role</option>
 						<option value="1">Customer Support</option>
 						<option value="2">Reviewer</option>
 					</select>

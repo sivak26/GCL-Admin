@@ -8,6 +8,6 @@
 
 	<h1>Admin Registration</h1>
 	<a href="registration">Registration</a>
-	<a href="/gcl/login.jsp">Login</a>
+	<a href="login">Login</a>
 </body>
 </html>

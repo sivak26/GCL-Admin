@@ -26,10 +26,9 @@ public class RegistrationController {
 
 	@RequestMapping(value = "/registration", method = RequestMethod.POST)
 	public String registration(@ModelAttribute("userForm") User userForm, Model model) {
-		System.out.println(userForm.getFirstName());
-		registrationService.saveDetails(userForm);
+		registrationService.saveDetails(userForm);		
 		System.out.println("POST....");
 		return "welcome";
 	}
-
+	
 }
