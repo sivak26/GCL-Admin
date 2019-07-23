@@ -1,9 +1,14 @@
 package greencard.admin.account.repository;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
 import org.springframework.stereotype.Repository;
 
 import greencard.admin.account.model.User;
@@ -13,37 +18,52 @@ public class LoginDaoImpl implements LoginDao {
 
 	boolean status = false;
 	
-	Configuration cfg = null;
-	SessionFactory sf = null;
-	Session s = null;
+	Configuration cfg;
+	SessionFactory sf;
+	Session s;
+	Transaction tx;
 	
 	@Override
 	public boolean getUserDetails(User login) {
 		
 		try {
-			System.out.println("Try block");
-			
 			cfg = new Configuration();
-			sf = cfg.configure().buildSessionFactory();
+			cfg.configure("hibernate.cfg.xml");
+        	ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build();
+        	sf = cfg.buildSessionFactory(serviceRegistry);
 			s = sf.openSession();
-			System.out.println("IN>>.....");			
-			String hql = "from Admin where userId = 2";
-			System.out.println(">>>>>>>>>>>>>>" + hql);
-			Query q = s.createQuery(hql);
-			System.out.println("Query ==== " + q);
-			int i = q.executeUpdate();			
-			System.out.println("++++++++++++++++"+i);
+			tx = s.beginTransaction();
 			
-			//User user = (User) s.get(User.class, 1);
-		
-//			System.out.println("Database email" + user.getEmail());
-//			System.out.println("Database password" + user.getPassword());
-//			
-//			System.out.println("password" + login.getPassword());
-//				
-//			if(user.getPassword().equals(login.getPassword())) {
-//				status = true;
-//			}
+			Query query = s.getNamedQuery("SQL-findByEmail");
+			System.out.println(">>>>>> 1 Query = ");
+			
+			query.setString("email", login.getEmail());
+			
+			System.out.println(">>>>>> 2 Query = ");
+			
+			List<User> user = query.list();
+			
+			String email = "";
+			String password = "";
+			
+			System.out.println("Email = " + email);
+			System.out.println("Password = " + password);
+			
+			for(User u:user) {
+				email = u.getEmail();
+				password = u.getPassword();
+			}
+			
+			System.out.println("Email = " + email);
+			System.out.println("Password = " + password);
+			
+			
+			
+			if(password.equals(login.getPassword()) && email.equals(login.getEmail())) {
+				status = true;
+			}
+			
+			tx.commit();
 			
 		} catch (Exception e) {
 			System.out.println("Catch block");
