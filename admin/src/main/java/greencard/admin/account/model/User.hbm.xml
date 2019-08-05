@@ -19,11 +19,15 @@
 	</class>
 	
 	<query name="findByEmail">
-	<![CDATA[from User as ad where ad.email = :email]]>
+		<![CDATA[from User as ad where ad.email = :email]]>
 	</query>
 	
-	<sql-query name="SQL-findByEmail">
+	<sql-query name="SQL-findByUserId">
 		<return alias="Admin" class="greencard.admin.account.model.User" />
-		<![CDATA[select * from Admin as ad where ad.email = :email]]>
+		<![CDATA[select * from Admin as ad where ad.userId = :userId]]>
 	</sql-query>
+	
+	<query name="findByEmailId">
+		<![CDATA[from User as ad where ad.email = :email]]>
+	</query>
 </hibernate-mapping>

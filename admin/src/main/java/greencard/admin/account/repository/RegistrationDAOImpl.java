@@ -1,35 +1,113 @@
 package greencard.admin.account.repository;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import greencard.admin.account.model.User;
+import greencard.admin.account.utils.DBConnection;
 
 @Repository
 public class RegistrationDAOImpl implements RegistrationDAO {
 	
-	@SuppressWarnings("deprecation")
+	@Autowired
+	DBConnection dbconnection;
+	
+
+	User user;
+	
 	public void save(User user) {
-		Configuration cfg;
-		SessionFactory sf = null;
 		Session session = null;
-		Transaction t = null;
+		Transaction transaction;
 		try {
-			cfg = new Configuration();
-			sf = cfg.configure().buildSessionFactory();
-			session = sf.openSession();
-			t = session.beginTransaction();
-//			session.save(user);
+			
+			session = dbconnection.getSession();
+			
+			transaction = session.beginTransaction();
 			session.persist(user);
-			t.commit();
+			transaction.commit();
+			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally{
-			session.close();
-			System.out.println("FINALLY...");
+			if (session != null) {
+				session.close();
+			}
 		}
+	}
+	
+	@Override
+	public User findByUserID(int agclid) {
+		
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			
+			session = dbconnection.getSession();
+			transaction = session.beginTransaction();
+			
+			Query query = session.getNamedQuery("findByUserID");
+			query.setInteger("userId", agclid);
+			
+			List list = query.list();
+			
+			Iterator it = list.iterator();
+			
+			while (it.hasNext()) {
+				System.out.println("Query from Database...");
+				System.out.println(it.next());
+				user = (User) it.next();
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(session != null) {
+				session.close();	
+			}
+		}
+		
+		return user;
+	}
+	
+	@Override
+	public User findByEmailID(String email) {
+		
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			
+			session = dbconnection.getSession();
+			transaction = session.beginTransaction();
+			
+			Query query = session.getNamedQuery("findByEmailId");
+			query.setString("email", email);
+			
+			List list = query.list();
+			
+			Iterator itr = list.iterator();
+			
+			while (itr.hasNext()) {
+				user = (User) itr.next();
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(session != null) {
+				session.close();
+			}
+		}
+		
+		return user;
 	}
 }

@@ -9,5 +9,6 @@
 /home/sivak/eclipse-workspace/admin/src/main/java/greencard/admin/account/repository/RegistrationDAO.java
 /home/sivak/eclipse-workspace/admin/src/main/java/greencard/admin/account/services/LoginService.java
 /home/sivak/eclipse-workspace/admin/src/main/java/greencard/admin/account/services/RegistrationService.java
+/home/sivak/eclipse-workspace/admin/src/main/java/greencard/admin/account/utils/DBConnection.java
 /home/sivak/eclipse-workspace/admin/src/main/java/greencard/admin/account/model/User.java
 /home/sivak/eclipse-workspace/admin/src/main/java/greencard/admin/account/repository/RegistrationDAOImpl.java

@@ -3,6 +3,9 @@ package greencard.admin.account.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
+
 public class User {
 	 Date date= new Date();
 	 long time = date.getTime();

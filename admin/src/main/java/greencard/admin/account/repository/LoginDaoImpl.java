@@ -4,73 +4,65 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import greencard.admin.account.model.User;
+import greencard.admin.account.utils.DBConnection;
 
 @Repository
 public class LoginDaoImpl implements LoginDao {
 
-	boolean status = false;
+	@Autowired
+	DBConnection dbconnection;
 	
-	Configuration cfg;
-	SessionFactory sf;
-	Session s;
-	Transaction tx;
+	boolean status = false;
+	Session session = null;
+	Transaction transaction;
+	User user;
 	
 	@Override
 	public boolean getUserDetails(User login) {
 		
 		try {
-			cfg = new Configuration();
-			cfg.configure("hibernate.cfg.xml");
-        	ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build();
-        	sf = cfg.buildSessionFactory(serviceRegistry);
-			s = sf.openSession();
-			tx = s.beginTransaction();
 			
-			Query query = s.getNamedQuery("SQL-findByEmail");
-			System.out.println(">>>>>> 1 Query = ");
+			session = dbconnection.getSession();
+			
+			transaction = session.beginTransaction();
+
+			Query query = session.getNamedQuery("SQL-findByEmail");
 			
 			query.setString("email", login.getEmail());
 			
-			System.out.println(">>>>>> 2 Query = ");
-			
 			List<User> user = query.list();
 			
-			String email = "";
-			String password = "";
+			String email = login.getEmail();
+			String password = login.getPassword();
 			
-			System.out.println("Email = " + email);
-			System.out.println("Password = " + password);
+			System.out.println("Before " + login.getFirstName());
 			
 			for(User u:user) {
-				email = u.getEmail();
-				password = u.getPassword();
+				
+				login.setFirstName(u.getFirstName());
+				login.setLastName(u.getLastName());
+				login.setEmail(u.getEmail());
+				login.setRole(u.getRole());
+				login.setAccountStatus(u.getAccountStatus());
 			}
 			
-			System.out.println("Email = " + email);
-			System.out.println("Password = " + password);
-			
-			
+			System.out.println("After " + login.getFirstName());
 			
 			if(password.equals(login.getPassword()) && email.equals(login.getEmail())) {
 				status = true;
 			}
 			
-			tx.commit();
+			transaction.commit();
 			
 		} catch (Exception e) {
-			System.out.println("Catch block");
 			e.getMessage();
 		} finally {
-			s.close();
-			sf.close();
+			session.close();
 		}
 		
 		return status;

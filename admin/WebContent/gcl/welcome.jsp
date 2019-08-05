@@ -8,8 +8,6 @@
 </head>
 <body>
 
-<a href="/signout">signout</a><br/>
-
 <h3>Registration Success !!!!</h3>${userForm.getLastName()}
 <h3>Login Success !!!!</h3>${loginForm.getEmail()}
 

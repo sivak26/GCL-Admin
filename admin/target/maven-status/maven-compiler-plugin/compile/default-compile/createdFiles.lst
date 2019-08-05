@@ -1,4 +1,5 @@
 greencard/admin/account/services/LoginServiceImpl.class
+greencard/admin/account/utils/DBConnection.class
 greencard/admin/account/services/RegistrationService.class
 greencard/admin/account/services/RegistrationServiceImpl.class
 greencard/admin/account/repository/RegistrationDAOImpl.class

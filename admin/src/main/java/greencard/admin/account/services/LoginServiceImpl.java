@@ -12,15 +12,15 @@ public class LoginServiceImpl implements LoginService {
 	@Autowired
 	LoginDao loginDao;
 	
-	String viewPage = "welcome";
+	String viewPage = "register";
 	
 	@Override
 	public String authenticateUser(User login) {
-		System.out.println("Service Login");
+
 		boolean loginStatus = loginDao.getUserDetails(login);
 		
-		if(!loginStatus) {
-			viewPage = "error";
+		if(loginStatus) {
+			viewPage = "agentDetails";
 		}
 		
 		return viewPage;
