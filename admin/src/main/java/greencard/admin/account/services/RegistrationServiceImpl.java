@@ -23,95 +23,102 @@ public class RegistrationServiceImpl implements RegistrationService {
 	
 	@Override
 	public void saveDetails(User user) {
-		
 		registrationDAO.save(user);
 	}
 	
 	@Override
 	public boolean signedIn(HttpServletRequest request, HttpServletResponse response, HttpSession sessoin) {
 		
-		if(cookieExist(request)) {
-			return true;
+		if(!cookieExist(request)) {
+			System.out.println("Service - Cookie value not exists ...");
+			return false;
 		}
 		
-		if(isUserSession(sessoin, request)) {
-			return true;
+		if(!isUserSession(sessoin, request)) {
+			createSessionWithCookie(request, response, sessoin);
+			return false;
 		}
 		
-		return false;
+		return true;
 	}
 	
 	@Override
 	public boolean isRegisteredUser(String email) {
-		System.out.println("Service - Check Is user already registered or NOT ...");
+		System.out.println("Service - Check if the user already registered or NOT ...");
 		user = registrationDAO.findByEmailID(email);
 		
-		if (user != null) {
-			System.out.println("Service - Already registered ...");
+		if (!user.equals(null)) {
+			System.out.println("Service - " + user.getEmail() + " User already registered ...");
 			return true;
 		}
-		
 		return false;
 	}
 	
-
-	private boolean isUserSession(HttpSession sessoin, HttpServletRequest request) {
+	@Override
+	public boolean authenticate(String emailId, String password) {
+		System.out.println("Service - Authenticate using EmailID ...");
 		
-		int agclid;
-		String cookieValue;
+		user = registrationDAO.findByEmailID(emailId);
 		
-		try {
-		if(sessoin.getAttribute("agent") == null) {
-			System.out.println("User not in Session. So retrieve session using cookie ...");
+		System.out.println("Service - Password from Database = " + user.getPassword());
+		System.out.println("Service - Password from Request  = " + password);
 
-			cookieValue = getagclidCookieValue(request);
-			
-			if (cookieValue != "" && cookieValue != null) {
-				System.out.println("Cookie value exists in service");
-				agclid = Integer.parseInt(getagclidCookieValue(request));
-				user = registrationDAO.findByUserID(agclid);
-			}
-			
-			if (user != null) {
-				System.out.println("User values successfully get from database....");
-				sessoin.setAttribute("agent", user);
-				return true;
-			}
-			
-			return false;
-			
-		} else {
-			System.out.println("User is in Sesison ...");
-			User user = (User) sessoin.getAttribute("agent");
-			
-			agclid = Integer.parseInt(getagclidCookieValue(request));
-			
-			if(agclid == user.getUserId()) {
-				System.out.println("Same User ... ");
-				return true;
-			} else {
-				System.out.println("Different User...");
-			}
-			
+		return (password.equals(user.getPassword()));
+	}
+	
+	@Override
+	public User getUserDetails(String emailId) {
+		
+		System.out.println("Service - Getting user detail using EmailID ...");
+		
+		user = registrationDAO.findByEmailID(emailId);
+		
+		System.out.println("Service - Email from Database = " + user.getEmail());
+		System.out.println("Service - FirstName from Database  = " + user.getFirstName());
+		System.out.println("Service - UserID from Database  = " + user.getUserId());
+
+		return user;
+	}
+	
+	private boolean createSessionWithCookie(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		System.out.println("Service - Creating serssion using Cookie ...");
+		String cookieValue = getagclidCookieValue("agclid", request);
+		
+		user = (User)registrationDAO.findByUserID(Integer.parseInt(cookieValue));
+		
+		if (user != null) {
+			session.setAttribute("agent", user);
+			return true;
 		}
-		} catch (Exception e) {
-			System.out.println("Exception throwning because of NULL value or number format...");
-			e.getMessage();
-		}
-
-		
 		return false;
 	}
+	
+	private boolean isUserSession(HttpSession sessoin, HttpServletRequest request) {
+		if(sessoin.getAttribute("agent") == null) {
+			return false;
+		} else {
+			System.out.println("Service - User in session ...");
+			user = (User) sessoin.getAttribute("agent");
+			
+			int agentIdFromCookie = Integer.parseInt(getagclidCookieValue("agclid", request));
+			
+			int agentIdFromUser = user.getUserId();
+			
+			System.out.println("userID from Database = " + agentIdFromUser);
+			System.out.println("userID from Cookie = " + agentIdFromCookie);
 
-	private String getagclidCookieValue(HttpServletRequest request) {
+			return agentIdFromCookie == agentIdFromUser;
+		}
+	}
+
+	private String getagclidCookieValue(String agclid, HttpServletRequest request) {
 		String cookieValue = null;
 		Cookie[] cookies = request.getCookies();
 		
 		for (Cookie cookie : cookies) {
-			if(cookie.getName().equals("agclid")) {
+			if(cookie.getName().equals(agclid)) {
 				System.out.println("AGCLID value = " + cookie.getValue());
 				cookieValue = cookie.getValue();
-				return cookieValue;
 			}
 		}
 		return cookieValue;
@@ -124,28 +131,26 @@ public class RegistrationServiceImpl implements RegistrationService {
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				if(cookie.getName().equals("agclid")) {
-					System.out.println("Cookie value from Service = " + cookie.getValue());
+					System.out.println("Cookie Value EXISTS ..." + cookie.getValue());
 					return true;
 				}
 			}
 		}
-		System.out.println("Cooke value is ... " + cookies);
+		System.out.println("Service - Cookie value NOT EXISTS ...");
 		return false;
 	}
 	
 	public void setUserIDCookie(int userId, HttpServletResponse response) {
-		System.out.println("Setting Cookie value after Registration success....");
-		
 		String agentId = Integer.toString(userId);
 		
 		try {
-		Cookie cookie = new Cookie("agclid", agentId);
-		cookie.setMaxAge(-1);
-		cookie.setPath("/");
-		
-		response.addCookie(cookie);
+			Cookie cookie = new Cookie("agclid", agentId);
+			cookie.setMaxAge(-1);
+			cookie.setPath("/");
+			response.addCookie(cookie);
+			System.out.println("Service - agclid cookie set after Registration success ...");
 		}catch (Exception e) {
-			System.out.println("Cookie value setting error ....");
+			System.out.println("Service - Exception while setting agclid cookie ...");
 		}
 		
 	}

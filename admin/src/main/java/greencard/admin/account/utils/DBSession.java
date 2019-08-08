@@ -6,7 +6,7 @@ import org.hibernate.cfg.Configuration;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DBConnection {
+public class DBSession {
 
 	Configuration configuration;
 	SessionFactory sessionFactory;

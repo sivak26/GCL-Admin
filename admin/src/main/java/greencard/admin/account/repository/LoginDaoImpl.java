@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import greencard.admin.account.model.User;
-import greencard.admin.account.utils.DBConnection;
+import greencard.admin.account.utils.DBSession;
 
 @Repository
 public class LoginDaoImpl implements LoginDao {
 
 	@Autowired
-	DBConnection dbconnection;
+	DBSession dbconnection;
 	
 	boolean status = false;
 	Session session = null;

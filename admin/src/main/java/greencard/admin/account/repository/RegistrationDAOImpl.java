@@ -10,15 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import greencard.admin.account.model.User;
-import greencard.admin.account.utils.DBConnection;
+import greencard.admin.account.utils.DBSession;
 
 @Repository
 public class RegistrationDAOImpl implements RegistrationDAO {
 	
 	@Autowired
-	DBConnection dbconnection;
+	DBSession dbSession;
 	
-
 	User user;
 	
 	public void save(User user) {
@@ -26,7 +25,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		Transaction transaction;
 		try {
 			
-			session = dbconnection.getSession();
+			session = dbSession.getSession();
 			
 			transaction = session.beginTransaction();
 			session.persist(user);
@@ -49,21 +48,22 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		
 		try {
 			
-			session = dbconnection.getSession();
+			session = dbSession.getSession();
+			
 			transaction = session.beginTransaction();
 			
-			Query query = session.getNamedQuery("findByUserID");
+			Query query = session.getNamedQuery("SQL_findByUserId");
 			query.setInteger("userId", agclid);
 			
 			List list = query.list();
 			
-			Iterator it = list.iterator();
+			Iterator iterator = list.iterator();
 			
-			while (it.hasNext()) {
-				System.out.println("Query from Database...");
-				System.out.println(it.next());
-				user = (User) it.next();
+			while (iterator.hasNext()) {
+				user = (User) iterator.next();
 			}
+			
+			transaction.commit();
 			
 			
 		} catch (Exception e) {
@@ -85,21 +85,19 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		
 		try {
 			
-			session = dbconnection.getSession();
-			transaction = session.beginTransaction();
+			session = dbSession.getSession();
 			
-			Query query = session.getNamedQuery("findByEmailId");
+			transaction = session.beginTransaction();
+			Query query = session.getNamedQuery("HQL_findByEmailId");
 			query.setString("email", email);
 			
 			List list = query.list();
 			
-			Iterator itr = list.iterator();
+			Iterator iterator = list.iterator();
 			
-			while (itr.hasNext()) {
-				user = (User) itr.next();
+			while (iterator.hasNext()) {
+				user = (User) iterator.next();
 			}
-			
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -107,7 +105,6 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				session.close();
 			}
 		}
-		
 		return user;
 	}
 }

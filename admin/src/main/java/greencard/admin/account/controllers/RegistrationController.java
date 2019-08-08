@@ -16,6 +16,7 @@ import greencard.admin.account.model.User;
 import greencard.admin.account.services.RegistrationService;
 
 @Controller
+@RequestMapping("/registration")
 public class RegistrationController {
 	
 	@Autowired
@@ -24,40 +25,40 @@ public class RegistrationController {
 	
 	private final static String SUCCESS_PAGE = "welcome";
 	private final static String REGISTRATION_PAGE = "register";
-	private final static String NEXT_PAGE = "register";
+	private final static String LOGIN_PAGE = "/login.do";
 	
 	
-	@RequestMapping(value = "/registration", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	public String registraion(HttpServletRequest request, 
 			HttpServletResponse response, 
 			HttpSession session, 
 			@CookieValue(value = "agclid", required = false) String agclid, 
 			Model model){
 		
-		System.out.println("GET....");
+		System.out.println("GET Method Called ....");
 		
 		// Checking agclid cookie and user session exist or not
 		
 		boolean signedIn = registrationService.signedIn(request, response, session);
+		System.out.println("Signedin Status = " + signedIn);
 		
 		if (signedIn) {
-			System.out.println("User already in session ...");
+			System.out.println("Controller - User already in session ...");
 			return SUCCESS_PAGE;
 		}
 		
 		model.addAttribute("agent", new User());
-		return NEXT_PAGE;
-		
+		return REGISTRATION_PAGE;
 	}
 
 
-	@RequestMapping(value = "/registration", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	public String registration(HttpServletRequest request, 
 			HttpServletResponse response, 
 			HttpSession session, 
 			@ModelAttribute("agent") User agent, Model model) {
 		
-		System.out.println("POST....");
+		System.out.println("POST method called ....");
 		
 		boolean signedIn = registrationService.signedIn(request, response, session);
 		
@@ -69,22 +70,20 @@ public class RegistrationController {
 		boolean registeredUser = registrationService.isRegisteredUser(agent.getEmail());
 		
 		if(registeredUser) {
-			System.out.println("User already exists ....");
-			return REGISTRATION_PAGE;
+			System.out.println("Controller - User already exists ....");
+			return "redirect:"+LOGIN_PAGE;
 		}
 		
 		registrationService.saveDetails(agent);
 		
-		System.out.println("Controller - " + agent.getEmail());
 		System.out.println("Controller - " + agent.getFirstName());
 		System.out.println("Controller - " + agent.getLastName());
-		System.out.println("Controller - " + agent.getRole());
+		System.out.println("Controller - " + agent.getUserId());
+		System.out.println("Controller - " + agent.getEmail());
 		System.out.println("Controller - " + agent.getPassword());
 		
 		registrationService.setUserIDCookie(agent.getUserId(), response);
-		
-		System.out.println("NEXT PAGE");
-		return NEXT_PAGE;
+
+		return SUCCESS_PAGE;
 	}
-	
 }

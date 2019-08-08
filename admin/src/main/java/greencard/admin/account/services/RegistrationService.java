@@ -15,5 +15,9 @@ public interface RegistrationService {
 	boolean isRegisteredUser(String email);
 	
 	void setUserIDCookie(int userId, HttpServletResponse response);
+	
+	boolean authenticate(String emailId, String password);
+	
+	User getUserDetails(String emailId);
 
 }
