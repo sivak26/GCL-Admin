@@ -23,7 +23,7 @@ public class RegistrationController {
 	RegistrationService registrationService;
 	
 	
-	private final static String SUCCESS_PAGE = "welcome";
+	private final static String SUCCESS_PAGE = "actions";
 	private final static String REGISTRATION_PAGE = "register";
 	private final static String LOGIN_PAGE = "/login.do";
 	

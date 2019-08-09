@@ -45,11 +45,15 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Override
 	public boolean isRegisteredUser(String email) {
 		System.out.println("Service - Check if the user already registered or NOT ...");
+		try {
 		user = registrationDAO.findByEmailID(email);
 		
 		if (!user.equals(null)) {
 			System.out.println("Service - " + user.getEmail() + " User already registered ...");
 			return true;
+		}
+		}catch (Exception e) {
+			System.out.println("Service - Email Not Exists ...");
 		}
 		return false;
 	}

@@ -24,7 +24,7 @@ public class LoginController {
 	
 	User agent;
 	
-	private final static String SUCCESS_PAGE = "welcome";
+	private final static String SUCCESS_PAGE = "actions";
 	private final static String LOGIN_PAGE = "login";
 	private final static String REGISTRATION_PAGE = "register";
 	

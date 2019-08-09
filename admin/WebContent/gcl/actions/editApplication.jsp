@@ -4,11 +4,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Welcome</title>
+<title>Insert title here</title>
 </head>
 <body>
-
-<h1>Welcome!!!</h1>
 
 </body>
 </html>
