@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        
+<hibernate-mapping package="greencard.admin.account.model">
+	<class name="CustomerContact" table="Contact">
+		<id name="userId" column="userId" type = "int" />
+		<property name="aptName" column="aptName" type="string"/>
+		<property name="street" column="street" type="string" />
+		<property name="city" column="city" type="string" />
+		<property name="state" column="state" type="string"/>
+		<property name="country" column="country" type="string"/>
+		<property name="zip" column="zip" type="string" />
+		<property name="telephone" column="telephone" type="string"/>
+		<property name="email" column="email" type="string"/>
+	</class>
+	
+	<query name="findByuserId">
+		<![CDATA[from CustomerContact where userId = :accountId]]>
+	</query>
+	
+</hibernate-mapping>
