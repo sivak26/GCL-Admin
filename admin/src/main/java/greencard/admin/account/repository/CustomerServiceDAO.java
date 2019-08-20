@@ -1,9 +1,16 @@
 package greencard.admin.account.repository;
 
-import greencard.admin.account.model.Customer;
+import greencard.admin.account.model.CustomerContact;
+import greencard.admin.account.model.CustomerRegistration;
 
 public interface CustomerServiceDAO {
 	
-	Customer findByAccountId(String accountId);
+	CustomerRegistration getRegistration(String accountId);
+	
+	int deleteByAccountId(String customerId, String emailId);
+	
+	int skipAccount(String customerId);
+	
+	CustomerContact getContact(String accountId);
 
 }

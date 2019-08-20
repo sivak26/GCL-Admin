@@ -13,6 +13,7 @@
 			<property name="show_sql">true</property>
 			<property name="format_sql">true</property>
 			
-			<mapping resource="greencard/admin/account/model/User.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/Agent.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/Customer.hbm.xml"/>
 		</session-factory>
 	</hibernate-configuration>
