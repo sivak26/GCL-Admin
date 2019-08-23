@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        
+<hibernate-mapping package="greencard.admin.account.model">
+	<class name="Agent" table="Admin">
+		<id name="userId" type = "int" column="userId">
+			<generator class="native" />
+		</id>
+		<property name="email" column="email" type="string"/>
+		<property name="password" column="password" type="string" />
+		<property name="firstName" column="firstName" type="string" />
+		<property name="lastName" column="lastName" type="string"/>
+		<property name="role" column="role" type="string"/>
+		<property name="createdDate" column="createdDate" type="timestamp" />
+		<property name="accountStatus" column="accountStatus" type="int"/>
+		<property name="lastLoginDate" column="lastLoginDate" type="timestamp"/>
+	</class>
+	
+	<query name="HQL_findByEmail">
+		<![CDATA[from Agent where email = :email]]>
+	</query>
+	
+	<sql-query name="SQL_findByUserId">
+		<return alias="Admin" class="greencard.admin.account.model.Agent" />
+		<![CDATA[select * from Admin where userId = :userId]]>
+	</sql-query>
+	
+	<query name="HQL_findByEmailId">
+		<![CDATA[from Agent where email = :email]]>
+	</query>
+</hibernate-mapping>

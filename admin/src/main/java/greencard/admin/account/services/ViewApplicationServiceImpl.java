@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import greencard.admin.account.model.Applicant;
+import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
 import greencard.admin.account.model.CustomerRegistration;
 import greencard.admin.account.repository.CustomerServiceDAO;
@@ -17,7 +19,9 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 	CustomerServiceDAO customerServiceDAO;
 	
 	CustomerRegistration customerRegistration;
+	CustomerApplication customerApplication;
 	CustomerContact customerContact;
+	Applicant applicant;
 
 	@Override
 	public CustomerRegistration getRegistrationDetails(HttpServletRequest request, 
@@ -36,6 +40,23 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 		}
 		
 		return customerRegistration;
+	}
+	
+	@Override
+	public CustomerApplication getApplicationDetails(HttpServletRequest request, HttpServletResponse response,
+			String accountId) {
+		System.out.println("Service - Application Called...");
+		
+		try {
+			
+			customerApplication = customerServiceDAO.getApplication(accountId);
+			
+		} catch (Exception e) {
+			System.out.println("Null pointer exception ...");
+			e.getMessage();
+		}
+		
+		return customerApplication;
 	}
 
 	
@@ -89,5 +110,26 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 		}
 		
 		return customerContact;
+	}
+	
+	@Override
+	public Applicant getApplicant(HttpServletRequest request, 
+			HttpServletResponse response, 
+			int applicationId) {
+		
+		System.out.println("Service - Customer Service called ...");
+		try {
+			
+			System.out.println("Getting Applicant Details ...");
+			
+			applicant = customerServiceDAO.getApplicant(applicationId);
+			System.out.println("City from DAO - " + applicant.getFirstName());
+			
+		}catch (Exception e) {
+			System.out.println("Service - Null pointer exception Applicant...");
+			e.getMessage();
+		}
+		
+		return applicant;
 	}
 }

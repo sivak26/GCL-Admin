@@ -11,6 +11,8 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import greencard.admin.account.model.Applicant;
+import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
 import greencard.admin.account.model.CustomerRegistration;
 import greencard.admin.account.utils.DBSession;
@@ -22,7 +24,9 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 	DBSession dbSession;
 	
 	CustomerRegistration customerRegistration;
+	CustomerApplication customerApplication;
 	CustomerContact customerContact;
+	Applicant applicant;
 
 	@Override
 	public CustomerRegistration getRegistration(String accountId) {
@@ -54,6 +58,42 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 			}
 		}
 		return customerRegistration;
+	}
+	
+	@Override
+	public CustomerApplication getApplication(String accountId) {
+		System.out.println("DAO - Get Application called...");
+		
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			session = dbSession.getSession();
+			transaction = session.beginTransaction();
+			
+			int userId = Integer.parseInt(accountId);
+			
+			Query query = session.getNamedQuery("application_findByAccountId");
+			query.setInteger("accountId", userId);
+			
+			List list = query.list();
+			Iterator iterator = list.iterator();
+			
+			while (iterator.hasNext()) {
+				customerApplication = (CustomerApplication) iterator.next();	
+			}
+			
+			transaction.commit();
+			} catch (Exception e) {
+				System.out.println("Error while connecting Database...");
+				e.printStackTrace();
+			} finally {
+				if (session != null) {
+					session.close();
+				}
+			}
+		System.out.println(customerApplication.getApplicationTakenBy());
+		return customerApplication;
 	}
 	
 	@Override
@@ -166,6 +206,45 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 			session.close();
 		}
 		return customerContact;
+	}
+	
+	@Override
+	public Applicant getApplicant(int applicationId) {
+		
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			System.out.println("Applicant DAO Called ...");
+			
+			session = dbSession.getSession();
+			
+			transaction = session.beginTransaction();
+			
+			Query query = session.getNamedQuery("findByApplicationId");
+			query.setInteger("applicationId", applicationId);
+			
+			List list = query.list();
+			
+			Iterator iterator = list.iterator();
+			
+			System.out.println("==========" + query.list());
+			while (iterator.hasNext()) {
+				applicant = (Applicant) iterator.next();
+				
+			}
+			System.out.println("<>>>>>>>>>>>>>>>> DateOfBirth = " + applicant.getDateOfBirth());
+			
+			transaction.commit();
+		} catch (Exception e) {
+			System.out.println("Error contact with database ...");
+			e.getMessage();
+			e.printStackTrace();
+			
+		} finally {
+			session.close();
+		}
+		return applicant;
 	}
 
 }

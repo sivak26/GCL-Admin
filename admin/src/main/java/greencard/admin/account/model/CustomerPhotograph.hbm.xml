@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+        
+<hibernate-mapping package="greencard.admin.account.model">
+	<class name="CustomerPhotograph" table="Photographs">
+		<id name="userId" column="userId" type = "int" />
+		<property name="photographType" column="photographType" type="string"/>
+		<property name="resolution" column="resolution" type="string" />
+		<property name="photographStatus" column="photographStatus" type="int" />
+		<property name="uploadedDate" column="uploadedDate" type="timestamp"/>
+		<property name="backgroundRejectedFlaggedStatus" column="backgroundRejectedFlaggedStatus" type="int"/>
+		<property name="blurRejectedFlaggedStatus" column="blurRejectedFlaggedStatus" type="int" />
+		<property name="faceRejectedFlaggedStatus" column="faceRejectedFlaggedStatus" type="int"/>
+		<property name="faceProcessorErrorFlaggedStatus" column="faceProcessorErrorFlaggedStatus" type="int"/>
+	</class>
+	
+	<query name="Photo_findByAccountId">
+		<![CDATA[from CustomerPhotograph where userId = :accountId]]>
+	</query>
+	
+</hibernate-mapping>

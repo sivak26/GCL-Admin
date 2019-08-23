@@ -13,7 +13,11 @@
 		<property name="maritalStatus" column="maritalStatus" type="int"/>
 		<property name="applicantEducation" column="applicantEducation" type="int" />
 		<property name="noOfChildren" column="noOfChildren" type="int"/>
-		<property name="dateOfBirth" column="dateOfBirth" type="Date"/>
+		
+		<property name="dateOfBirth" type="date">
+			<column name="dateOfBirth" sql-type="datetime" />
+		</property>
+		
 		<property name="cityOfBirth" column="cityOfBirth" type="string"/>
 		<property name="countryOfBirth" column="countryOfBirth" type="string"/>
 		<property name="nativeCountry" column="nativeCountry" type="string"/>

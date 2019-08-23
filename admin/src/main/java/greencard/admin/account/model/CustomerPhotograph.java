@@ -2,8 +2,9 @@ package greencard.admin.account.model;
 
 import java.sql.Timestamp;
 
-public class CustomerPhotos {
+public class CustomerPhotograph {
 
+	private int userId;
 	private String photographType;
 	private String resolution;
 	private int photographStatus;
@@ -13,6 +14,13 @@ public class CustomerPhotos {
 	private int faceRejectedFlaggedStatus;
 	private int faceProcessorErrorFlaggedStatus;
 	
+	
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
 	
 	public String getPhotographType() {
 		return photographType;

@@ -4,29 +4,22 @@
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
         
 <hibernate-mapping package="greencard.admin.account.model">
-	<class name="CustomerRegistration" table="Registration">
-		<id name="userId" type = "int" column="userId">
-			<generator class="native" />
-		</id>
-		<property name="email" column="email" type="string"/>
-		<property name="firstName" column="firstName" type="string" />
-		<property name="lastName" column="lastName" type="string" />
-		<property name="password" column="password" type="string"/>
-		<property name="signUpDate" column="signUpDate" type="timestamp"/>
-		<property name="lastAccess" column="lastAccess" type="timestamp" />
-		<property name="telephone" column="telephone" type="string"/>
-		<property name="mobile" column="mobile" type="string"/>
-		<property name="birthCountry" column="birthCountry" type="string"/>
-		<property name="spouseCountry" column="spouseCountry" type="string"/>
-		<property name="residenceCountry" column="residenceCountry" type="string"/>
+	<class name="CustomerApplication" table="Application">
+		<id name="applicationId" type = "int" column="applicationId" />
+		<property name="productId" column="productId" type="int"/>
+		<property name="createdDate" column="createdDate" type="timestamp" />
+		<property name="lastAccessed" column="lastAccessed" type="timestamp" />
+		<property name="applicationType" column="applicationType" type="int"/>
+		<property name="applicationTakenForReview" column="applicationTakenForReview" type="int"/>
+		<property name="applicationTakenTime" column="applicationTakenTime" type="timestamp" />
+		<property name="photoSentThrough" column="photoSentThrough" type="int"/>
+		<property name="photoUploadStatus" column="photoUploadStatus" type="int"/>
+		<property name="applicationStatus" column="applicationStatus" type="int"/>
+		<property name="applicationTakenBy" column="applicationTakenBy" type="int"/>
 	</class>
 	
-	<query name="findByAccountId">
-		<![CDATA[from CustomerRegistration where userId = :accountId]]>
-	</query>
-	
-	<query name="deleteByAccountId">
-		<![CDATA[update CustomerRegistration set email = :emailId where userId = :accountId]]>
+	<query name="application_findByAccountId">
+		<![CDATA[from CustomerApplication where userId = :accountId]]>
 	</query>
 	
 </hibernate-mapping>

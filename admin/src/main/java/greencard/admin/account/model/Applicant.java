@@ -16,7 +16,7 @@ public class Applicant {
 	private String cityOfBirth;
 	private String countryOfBirth;
 	private String nativeCountry;
-	private int photoId;
+	private Integer photoId;
 	
 	
 	public int getApplicantId() {
@@ -93,10 +93,10 @@ public class Applicant {
 		this.nativeCountry = nativeCountry;
 	}
 
-	public int getPhotoId() {
+	public Integer getPhotoId() {
 		return photoId;
 	}
-	public void setPhotoId(int photoId) {
+	public void setPhotoId(Integer photoId) {
 		this.photoId = photoId;
 	}
 	

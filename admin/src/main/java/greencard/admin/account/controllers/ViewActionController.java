@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import greencard.admin.account.model.Applicant;
+import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
 import greencard.admin.account.model.CustomerRegistration;
 import greencard.admin.account.services.ViewApplicationService;
@@ -35,9 +37,19 @@ public class ViewActionController {
 				CustomerRegistration customerRegistration = viewApplicationService.getRegistrationDetails(request, response, accountId);
 				
 				CustomerContact customerContact = viewApplicationService.getContactDetails(request, response, accountId);
+				
+				CustomerApplication customerApplication = viewApplicationService.getApplicationDetails(request, response, accountId);
+				
+				System.out.println("*********** Application ID = " + customerApplication.getApplicationId());
+				
+				Applicant applicant = viewApplicationService.getApplicant(request, response, customerApplication.getApplicationId());
 								
 				model.addAttribute("registration", customerRegistration);
+				model.addAttribute("application", customerApplication);
 				model.addAttribute("contact", customerContact);
+				model.addAttribute("applicant", applicant);
+				
+				
 				
 				System.out.println("Controller - Email from Model = " + customerRegistration.getEmail());
 				System.out.println("Controller - City  from Model = " + customerContact.getCity());

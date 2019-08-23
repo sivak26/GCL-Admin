@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 public class CustomerApplication {
 	
+	private int applicationId;
 	private int productId;
 	private Timestamp createdDate;
 	private Timestamp lastAccessed;
@@ -15,6 +16,13 @@ public class CustomerApplication {
 	private int applicationStatus;
 	private int applicationTakenBy;
 	
+	
+	public int getApplicationId() {
+		return applicationId;
+	}
+	public void setApplicationId(int applicationId) {
+		this.applicationId = applicationId;
+	}
 	
 	public int getProductId() {
 		return productId;

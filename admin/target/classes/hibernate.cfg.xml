@@ -15,6 +15,9 @@
 			
 			<mapping resource="greencard/admin/account/model/Agent.hbm.xml"/>
 			<mapping resource="greencard/admin/account/model/CustomerRegistration.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/CustomerApplication.hbm.xml"/>
 			<mapping resource="greencard/admin/account/model/CustomerContact.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/Applicant.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/CustomerPhotograph.hbm.xml"/>
 		</session-factory>
 	</hibernate-configuration>
