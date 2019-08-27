@@ -14,7 +14,9 @@ import org.springframework.stereotype.Repository;
 import greencard.admin.account.model.Applicant;
 import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
+import greencard.admin.account.model.CustomerPhotograph;
 import greencard.admin.account.model.CustomerRegistration;
+import greencard.admin.account.model.SkipSubmission;
 import greencard.admin.account.utils.DBSession;
 
 @Repository
@@ -27,6 +29,8 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 	CustomerApplication customerApplication;
 	CustomerContact customerContact;
 	Applicant applicant;
+	SkipSubmission skipSubmission;
+	CustomerPhotograph customerPhotograph;
 
 	@Override
 	public CustomerRegistration getRegistration(String accountId) {
@@ -131,33 +135,20 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 	}
 	
 	@Override
-	public int skipAccount(String customerId) {
+	public int skipAccount(SkipSubmission skipSubmission) {
 		
 		System.out.println("Database - Skiping...");
 		int status = 0;
-		
 		Session session = null;
 		Transaction transaction;
 		
 		try {
-			
-			 Date date= new Date();
-			 long time = date.getTime();
-			 Timestamp ts = new Timestamp(time);
-			
 			session = dbSession.getSession();
 			transaction = session.beginTransaction();
-			int userId = Integer.parseInt(customerId);
 			
-			Query query = session.getNamedQuery("skipAccount");
-			query.setInteger("customerId", userId);
-			query.setTimestamp("updatedDate", ts);
-			
-			status = query.executeUpdate();
-			System.out.println("Status is = " + status);
-			
+			session.persist(skipSubmission);
 			transaction.commit();
-			System.out.println("Status is 1 = " + status);
+			System.out.println(" >>>>>>>> Status is >>>>>>> = " + status);
 			
 		} catch (Exception e) {
 			e.getMessage();
@@ -167,6 +158,41 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 			}
 		}
 		return status;
+	}
+	
+	@Override
+	public SkipSubmission verifySkipStatus(int userId) {
+		System.out.println("Checking account skiped or not ...");
+		
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			session = dbSession.getSession();
+			transaction = session.beginTransaction();
+			
+			Query query = session.getNamedQuery("verifySkipByUserId");
+			query.setInteger("userId", userId);
+			
+			List list = query.list();
+			
+			Iterator iterator = list.iterator();
+			
+			while (iterator.hasNext()) {
+				skipSubmission = (SkipSubmission) iterator.next();
+			}
+			
+			transaction.commit();
+		} catch (Exception e) {
+			System.out.println("Database error ...");
+			e.getMessage();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return skipSubmission;
 	}
 	
 	@Override
@@ -245,6 +271,41 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 			session.close();
 		}
 		return applicant;
+	}
+	
+	@Override
+	public CustomerPhotograph getPhotograph(int userId) {
+		System.out.println("PhotoGraphs details ...");
+		
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			session = dbSession.getSession();
+			transaction = session.beginTransaction();
+			
+			Query query = session.getNamedQuery("Photo_findByAccountId");
+			query.setInteger("userId", userId);
+			
+			List list = query.list();
+			Iterator iterator = list.iterator();
+			
+			while (iterator.hasNext()) {
+				customerPhotograph = (CustomerPhotograph) iterator.next();
+			}
+			
+			transaction.commit();
+			
+		} catch (Exception e) {
+			System.out.println("Database error ...");
+			e.getMessage();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return customerPhotograph;
 	}
 
 }

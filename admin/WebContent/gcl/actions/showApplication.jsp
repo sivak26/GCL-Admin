@@ -9,14 +9,14 @@
 <body>
 
 	<form name="deleteApplication" action="/admin/deleteApplication" method="post">
-		<input type="hidden" name="registrationId" value="${registration.getUserId()}" />
+		<input type="hidden" name="customerId" value="${registration.getUserId()}" />
 		<input type="submit" name="deleteApplication" value="Delete Application" />
 	</form>
 	
 	<h2>Delete Status is ${deleteStatus}</h2>
 	
 	<form name="skipSubmission" action="/admin/skipSubmission" method="post">
-		<input type="hidden" name="registrationId" value="${registration.getUserId()}" />
+		<input type="hidden" name="customerId" value="${registration.getUserId()}" />
 		<input type="submit" name="skipSubmission" value="Skip Submission" />
 	</form>
 	
@@ -98,6 +98,21 @@
 		<li>CountryOfBirth : ${applicant.getCountryOfBirth()} </li>
 		<li>NativeCountry : ${applicant.getNativeCountry()} </li>
 		<li>PhotoId : ${applicant.getPhotoId()} </li>
+	</ul>
+	
+    <br /> <br />
+	
+    <h2>Photographs - Details</h2>
+	
+	<ul>
+		<li>PhotographType : ${photographs.getPhotographType()} </li>
+		<li>Resolution : ${photographs.getResolution()} </li>
+		<li>PhotographStatus : ${photographs.getPhotographStatus()} </li>
+		<li>UploadedDate : ${photographs.getUploadedDate()} </li>
+		<li>BackgroundStatus : ${photographs.getBackgroundRejectedFlaggedStatus()} </li>
+		<li>BlurStatus : ${photographs.getBlurRejectedFlaggedStatus()} </li>
+		<li>FaceDetectStatus : ${photographs.getFaceRejectedFlaggedStatus()} </li>
+		<li>FaceProcessorStatus : ${photographs.getFaceProcessorErrorFlaggedStatus()} </li>
 	</ul>
 	
 </body>

@@ -1,9 +1,13 @@
 package greencard.admin.account.repository;
 
+import javax.servlet.http.HttpServletRequest;
+
 import greencard.admin.account.model.Applicant;
 import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
+import greencard.admin.account.model.CustomerPhotograph;
 import greencard.admin.account.model.CustomerRegistration;
+import greencard.admin.account.model.SkipSubmission;
 
 public interface CustomerServiceDAO {
 	
@@ -17,6 +21,10 @@ public interface CustomerServiceDAO {
 	
 	int deleteByAccountId(String customerId, String emailId);
 	
-	int skipAccount(String customerId);
+	int skipAccount(SkipSubmission skipSubmission);
+	
+	SkipSubmission verifySkipStatus(int userId);
+	
+	CustomerPhotograph getPhotograph(int userId);
 
 }

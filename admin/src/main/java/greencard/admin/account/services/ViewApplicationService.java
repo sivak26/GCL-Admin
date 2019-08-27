@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import greencard.admin.account.model.Applicant;
 import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
+import greencard.admin.account.model.CustomerPhotograph;
 import greencard.admin.account.model.CustomerRegistration;
 
 public interface ViewApplicationService {
@@ -31,6 +32,10 @@ public interface ViewApplicationService {
 			String cutomerId);
 
 	int skipSubmission(HttpServletRequest request,
+			HttpServletResponse response,
+			String customerId);
+	
+	CustomerPhotograph getPhotographs(HttpServletRequest request,
 			HttpServletResponse response,
 			String customerId);
 }

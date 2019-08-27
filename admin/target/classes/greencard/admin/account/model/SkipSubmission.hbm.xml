@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+	<hibernate-mapping package="greencard.admin.account.model">
+		<class name="SkipSubmission" table="SkipList">
+			<id name="userId" column="userId" type="int" />
+			<property name="updatedDate" column="updatedDate" type="timestamp" />
+		</class>
+		
+		<query name="verifySkipByUserId">
+			<![CDATA[from SkipSubmission where userId = :userId]]>
+		</query>
+	</hibernate-mapping>

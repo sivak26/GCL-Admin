@@ -1,5 +1,8 @@
 package greencard.admin.account.services;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,7 +12,9 @@ import org.springframework.stereotype.Service;
 import greencard.admin.account.model.Applicant;
 import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
+import greencard.admin.account.model.CustomerPhotograph;
 import greencard.admin.account.model.CustomerRegistration;
+import greencard.admin.account.model.SkipSubmission;
 import greencard.admin.account.repository.CustomerServiceDAO;
 
 @Service
@@ -22,6 +27,8 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 	CustomerApplication customerApplication;
 	CustomerContact customerContact;
 	Applicant applicant;
+	SkipSubmission skipSubmission;
+	CustomerPhotograph customerPhotograph;
 
 	@Override
 	public CustomerRegistration getRegistrationDetails(HttpServletRequest request, 
@@ -82,13 +89,38 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 	}
 	
 	@Override
-	public int skipSubmission(HttpServletRequest request, HttpServletResponse response, String customerId) {
+	public int skipSubmission(HttpServletRequest request, 
+			HttpServletResponse response, 
+			String customerId) {
 		
-		System.out.println("Service - Skip operation Starts...");
+		System.out.println("Service - Skip operation Starts..." + customerId);
 		
 		int skipStatus = 0;
 		
-		skipStatus = customerServiceDAO.skipAccount(customerId);
+		int userId = Integer.parseInt(customerId);
+		
+		Date date= new Date();
+		long time = date.getTime();
+		Timestamp ts = new Timestamp(time);
+		
+		try {
+			skipSubmission = new SkipSubmission();
+			skipSubmission.setUserId(userId);
+			skipSubmission.setUpdatedDate(ts);
+			
+			skipSubmission = customerServiceDAO.verifySkipStatus(userId);
+			
+			if (skipSubmission != null) {
+				System.out.println("Already skiped");
+				return skipStatus;
+			}
+			
+			skipStatus = customerServiceDAO.skipAccount(skipSubmission);
+			
+		} catch (Exception e) {
+			System.out.println("Throw null pointer exception ...");
+			e.getMessage();
+		}
 		
 		return skipStatus;
 	}
@@ -125,11 +157,29 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 			applicant = customerServiceDAO.getApplicant(applicationId);
 			System.out.println("City from DAO - " + applicant.getFirstName());
 			
-		}catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Service - Null pointer exception Applicant...");
 			e.getMessage();
 		}
 		
 		return applicant;
+	}
+	
+	@Override
+	public CustomerPhotograph getPhotographs(HttpServletRequest request, HttpServletResponse response,
+			String customerId) {
+		
+		System.out.println("Photographs service called ...");
+		
+		try {
+			int userId = Integer.parseInt(customerId);
+			
+			customerPhotograph = customerServiceDAO.getPhotograph(userId);
+			
+		} catch (Exception e) {
+			System.out.println(">>>>>> Null pointer Exception ...");
+			e.getMessage();
+		}
+		return customerPhotograph;
 	}
 }

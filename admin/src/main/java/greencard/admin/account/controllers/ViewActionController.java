@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import greencard.admin.account.model.Applicant;
 import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
+import greencard.admin.account.model.CustomerPhotograph;
 import greencard.admin.account.model.CustomerRegistration;
 import greencard.admin.account.services.ViewApplicationService;
 
@@ -40,20 +41,15 @@ public class ViewActionController {
 				
 				CustomerApplication customerApplication = viewApplicationService.getApplicationDetails(request, response, accountId);
 				
-				System.out.println("*********** Application ID = " + customerApplication.getApplicationId());
-				
 				Applicant applicant = viewApplicationService.getApplicant(request, response, customerApplication.getApplicationId());
+				
+				CustomerPhotograph customerPhotograph = viewApplicationService.getPhotographs(request, response, accountId);
 								
 				model.addAttribute("registration", customerRegistration);
 				model.addAttribute("application", customerApplication);
 				model.addAttribute("contact", customerContact);
 				model.addAttribute("applicant", applicant);
-				
-				
-				
-				System.out.println("Controller - Email from Model = " + customerRegistration.getEmail());
-				System.out.println("Controller - City  from Model = " + customerContact.getCity());
-				
+				model.addAttribute("photographs", customerPhotograph);
 				
 			}
 		}catch (Exception e) {
@@ -84,17 +80,19 @@ public class ViewActionController {
 		return "/actions/showApplication";
 	}
 	
+	@RequestMapping(value = "/skipSubmission", method = RequestMethod.POST)
 	public String skipSubmission(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam("customerId") String customerId,
 			Model model) {
 		
-		System.out.println("Controller - Skip operation ...");
+		System.out.println("Controller - Skip operation ..." + customerId);
 		int skipStatus = 0;
 		
 		if (customerId != "") {
 			skipStatus = viewApplicationService.skipSubmission(request, response, customerId);
 		}
+		System.out.println("Controller - Skip Status is " + skipStatus);
 		
 		model.addAttribute("skipStatus", skipStatus);
 		

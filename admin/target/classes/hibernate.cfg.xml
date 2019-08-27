@@ -19,5 +19,6 @@
 			<mapping resource="greencard/admin/account/model/CustomerContact.hbm.xml"/>
 			<mapping resource="greencard/admin/account/model/Applicant.hbm.xml"/>
 			<mapping resource="greencard/admin/account/model/CustomerPhotograph.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/SkipSubmission.hbm.xml"/>
 		</session-factory>
 	</hibernate-configuration>
