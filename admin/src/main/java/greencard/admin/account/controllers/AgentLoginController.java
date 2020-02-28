@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,7 +31,6 @@ public class AgentLoginController {
 	public String login(HttpServletRequest request, 
 			HttpServletResponse response,
 			HttpSession session, 
-			@CookieValue(value = "agclid", required = false) String agclid,
 			Model model) {
 		
 		System.out.println("Login GET method called ...");
@@ -43,6 +41,7 @@ public class AgentLoginController {
 			System.out.println("Login - User already in session ...");
 			return SUCCESS_PAGE;
 		}
+		
 		return LOGIN_PAGE;
 	}
 
@@ -77,8 +76,9 @@ public class AgentLoginController {
 				
 				if(agent != null) {
 					System.out.println("Login - Login Successfully ...");
+					
 					session.setAttribute("agent", agent);
-					registrationService.setUserIDCookie(agent.getUserId(), response);
+					
 					return SUCCESS_PAGE;
 				}
 				

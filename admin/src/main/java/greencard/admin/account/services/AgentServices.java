@@ -14,8 +14,6 @@ public interface AgentServices {
 
 	boolean isRegisteredUser(String email);
 	
-	void setUserIDCookie(int userId, HttpServletResponse response);
-	
 	boolean authenticate(String emailId, String password);
 	
 	Agent getUserDetails(String emailId);

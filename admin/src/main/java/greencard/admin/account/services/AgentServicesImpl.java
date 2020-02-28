@@ -28,33 +28,36 @@ public class AgentServicesImpl implements AgentServices {
 	@Override
 	public boolean signedIn(HttpServletRequest request, HttpServletResponse response, HttpSession sessoin) {
 		
-		if(!cookieExist(request)) {
-			System.out.println("Service - Cookie value not exists ...");
-			return false;
+		boolean isAgentSession = false;
+		
+		try {
+			if(!sessoin.getAttribute("agent").equals(null)) {
+				isAgentSession = true;
+			}
+		} catch (Exception e) {
+			System.out.println("Service - Agent not in Session ...");
 		}
 		
-		if(!isUserSession(sessoin, request)) {
-			createSessionWithCookie(request, response, sessoin);
-			return false;
-		}
-		
-		return true;
+		return isAgentSession;
 	}
 	
 	@Override
 	public boolean isRegisteredUser(String email) {
-		System.out.println("Service - Check if the user already registered or NOT ...");
-		try {
-		user = registrationDAO.findByEmailID(email);
+		System.out.println("Service - Check if the user already registered or NOT ..." + email);
 		
-		if (!user.equals(null)) {
-			System.out.println("Service - " + user.getEmail() + " User already registered ...");
-			return true;
-		}
-		}catch (Exception e) {
+		boolean registeredUser = false;
+		
+		try {
+			user = registrationDAO.findByEmailID(email);
+		
+			if (!user.equals(null)) {
+				System.out.println("Service - " + user.getEmail() + " User already registered ...");
+				registeredUser = true;
+			}
+		} catch (Exception e) {
 			System.out.println("Service - Email Not Exists ...");
 		}
-		return false;
+		return registeredUser;
 	}
 	
 	@Override
@@ -101,89 +104,8 @@ public class AgentServicesImpl implements AgentServices {
 		jsessionId.setMaxAge(0);
 		jsessionId.setPath("/");
 		
-		Cookie agclid = new Cookie("agclid", null);
-		agclid.setMaxAge(0);
-		agclid.setPath("/");
-		
 		System.out.println("Service - JSESSIONID = " + jsessionId);
-		System.out.println("Service - Agclid = " + agclid);
 		
 		response.addCookie(jsessionId);
-		response.addCookie(agclid);
-	}
-	
-	private boolean createSessionWithCookie(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-		System.out.println("Service - Creating serssion using Cookie ...");
-		String cookieValue = getagclidCookieValue("agclid", request);
-		
-		user = (Agent)registrationDAO.findByUserID(Integer.parseInt(cookieValue));
-		
-		if (user != null) {
-			session.setAttribute("agent", user);
-			return true;
-		}
-		return false;
-	}
-	
-	private boolean isUserSession(HttpSession sessoin, HttpServletRequest request) {
-		if(sessoin.getAttribute("agent") == null) {
-			return false;
-		} else {
-			System.out.println("Service - User in session ...");
-			user = (Agent) sessoin.getAttribute("agent");
-			
-			int agentIdFromCookie = Integer.parseInt(getagclidCookieValue("agclid", request));
-			
-			int agentIdFromUser = user.getUserId();
-			
-			System.out.println("userID from Database = " + agentIdFromUser);
-			System.out.println("userID from Cookie = " + agentIdFromCookie);
-
-			return agentIdFromCookie == agentIdFromUser;
-		}
-	}
-
-	private String getagclidCookieValue(String agclid, HttpServletRequest request) {
-		String cookieValue = null;
-		Cookie[] cookies = request.getCookies();
-		
-		for (Cookie cookie : cookies) {
-			if(cookie.getName().equals(agclid)) {
-				System.out.println("AGCLID value = " + cookie.getValue());
-				cookieValue = cookie.getValue();
-			}
-		}
-		return cookieValue;
-	}
-
-	private boolean cookieExist(HttpServletRequest request) {
-
-		Cookie[] cookies = request.getCookies();
-		
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if(cookie.getName().equals("agclid")) {
-					System.out.println("Cookie Value EXISTS ..." + cookie.getValue());
-					return true;
-				}
-			}
-		}
-		System.out.println("Service - Cookie value NOT EXISTS ...");
-		return false;
-	}
-	
-	public void setUserIDCookie(int userId, HttpServletResponse response) {
-		String agentId = Integer.toString(userId);
-		
-		try {
-			Cookie cookie = new Cookie("agclid", agentId);
-			cookie.setMaxAge(-1);
-			cookie.setPath("/");
-			response.addCookie(cookie);
-			System.out.println("Service - agclid cookie set after Registration success ...");
-		}catch (Exception e) {
-			System.out.println("Service - Exception while setting agclid cookie ...");
-		}
-		
 	}
 }
