@@ -1,7 +1,5 @@
 package greencard.admin.account.repository;
 
-import javax.servlet.http.HttpServletRequest;
-
 import greencard.admin.account.model.Applicant;
 import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
