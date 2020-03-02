@@ -5,7 +5,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>Insert title here</title>
+		<title>Admin Actions</title>
 		
 		<style>
 			body {background-color: green;}
@@ -55,6 +55,7 @@
 				
 				<div class="info-section">
 					<div class="name-section">${agent.getFirstName()}  ${agent.getLastName()} ,
+						<a href="/admin" style="color: white;">Home</a> | 
 						<a href="logout" style="color: white;">SignOut</a>
 					</div>
 				</div>

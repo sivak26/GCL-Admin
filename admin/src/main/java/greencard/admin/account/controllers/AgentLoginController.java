@@ -91,8 +91,6 @@ public class AgentLoginController {
 			}
 		}
 		
-		model.addAttribute(agent);
-		
 		System.out.println("Login - Authentication Faild...");
 		return LOGIN_PAGE;
 
