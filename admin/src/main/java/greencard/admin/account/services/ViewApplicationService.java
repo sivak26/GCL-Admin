@@ -2,6 +2,7 @@ package greencard.admin.account.services;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import greencard.admin.account.model.Applicant;
 import greencard.admin.account.model.CustomerApplication;
@@ -13,6 +14,7 @@ public interface ViewApplicationService {
 	
 	CustomerRegistration getRegistrationDetails(HttpServletRequest request, 
 			HttpServletResponse response, 
+			HttpSession session, 
 			String accountId);
 	
 	CustomerApplication getApplicationDetails(HttpServletRequest request, 
@@ -29,6 +31,7 @@ public interface ViewApplicationService {
 	
 	int deleteApplication(HttpServletRequest request, 
 			HttpServletResponse response,
+			HttpSession session, 
 			String cutomerId);
 
 	int skipSubmission(HttpServletRequest request,

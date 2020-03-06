@@ -15,7 +15,7 @@
 		<property name="photoSentThrough" column="photoSentThrough" type="int"/>
 		<property name="photoUploadStatus" column="photoUploadStatus" type="int"/>
 		<property name="applicationStatus" column="applicationStatus" type="int"/>
-		<property name="applicationTakenBy" column="applicationTakenBy" type="int"/>
+		<property name="applicationTakenBy" column="applicationTakenBy" type="int" />
 	</class>
 	
 	<query name="application_findByAccountId">

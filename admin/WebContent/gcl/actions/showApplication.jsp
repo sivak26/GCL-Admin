@@ -1,3 +1,4 @@
+<%@page import="greencard.admin.account.model.CustomerRegistration"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     
@@ -64,6 +65,13 @@
 		</style>
 	</head>
 	<body>
+	<%=session.getAttribute("customerRegistration")%>
+	
+	<%
+	CustomerRegistration registration = (CustomerRegistration) session.getAttribute("customerRegistration");
+	%>
+	
+	<%=registration.getEmail()%>
 		<div class="main-section">
 			<div class="content-section">
 			
@@ -80,7 +88,7 @@
 					<div class="top-action">
 						<div class="delete-section">
 							<form name="deleteApplication" action="/admin/deleteApplication" method="post">
-								<input type="hidden" name="customerId" value="${registration.getUserId()}" />
+								<input type="hidden" name="customerId" value="${customerId}" />
 								<input class="action-btn" type="submit" name="deleteApplication" value="Delete Application" />
 							</form>
 							
@@ -89,7 +97,7 @@
 					
 						<div class="skip-section">
 							<form name="skipSubmission" action="/admin/skipSubmission" method="post">
-								<input type="hidden" name="customerId" value="${registration.getUserId()}" />
+								<input type="hidden" name="customerId" value="${customerId}" />
 								<input class="action-btn" type="submit" name="skipSubmission" value="Skip Submission" />
 							</form>
 							

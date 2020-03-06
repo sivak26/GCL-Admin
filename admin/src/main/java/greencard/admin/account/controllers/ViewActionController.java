@@ -21,21 +21,62 @@ import greencard.admin.account.services.ViewApplicationService;
 @Controller
 public class ViewActionController {
 	
+	public static String ACTION_FOR_CUSTMER_PAGE = "/actions/popups/actionForCustomer";
+	public static String SHOW_APPLICATION_PAGE = "/actions/showApplication";
+	public static String SELECT_ACTION_PAGE = "actions";
+	
 	@Autowired
 	ViewApplicationService viewApplicationService;
 	
+	@RequestMapping(value = "/customerAction", method = RequestMethod.GET)
+	public String actionForCustomer(HttpServletRequest request,  
+			HttpServletResponse response, 
+			@RequestParam("nextAction") String nextAction, 
+			Model model) {
+		
+		System.out.println("Next Action is = " + nextAction);
+		
+		if (nextAction != null && nextAction != "") {
+			
+			model.addAttribute("nextAction", nextAction);
+			return ACTION_FOR_CUSTMER_PAGE;
+			
+		}
+		
+		return SELECT_ACTION_PAGE;
+		
+	}
+	
+	/*@RequestMapping(value = "/showApplication", method = RequestMethod.GET)
+	public String viewApplication(HttpServletRequest request, 
+			HttpServletResponse response, 
+			@RequestParam("accountId") String accountId, 
+			Model model) {
+		
+		System.out.println("Show Application GET ......");
+		
+		if (accountId != null && accountId != "") {
+			model.addAttribute("accountId", accountId);
+			return SHOW_APPLICATION_PAGE;
+		}
+		
+		return SELECT_ACTION_PAGE;
+	}*/
 	
 	@RequestMapping(value = "/showApplication", method = RequestMethod.POST)
 	public String viewApplication (HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam("accountId") String accountId,
+			HttpSession session, 
+			@RequestParam("accountId") String accountId,  
 			Model model) {
+		
+		System.out.println("Account ==> " + accountId);
 		
 		try {
 			if (accountId != null && accountId != "") {
 				System.out.println("Controller - AccountID exists...");
 				
-				CustomerRegistration customerRegistration = viewApplicationService.getRegistrationDetails(request, response, accountId);
+				CustomerRegistration customerRegistration = viewApplicationService.getRegistrationDetails(request, response, session, accountId);
 				
 				CustomerContact customerContact = viewApplicationService.getContactDetails(request, response, accountId);
 				
@@ -44,15 +85,27 @@ public class ViewActionController {
 				Applicant applicant = viewApplicationService.getApplicant(request, response, customerApplication.getApplicationId());
 				
 				CustomerPhotograph customerPhotograph = viewApplicationService.getPhotographs(request, response, accountId);
-								
-				model.addAttribute("registration", customerRegistration);
+
+				if (session.getAttribute("customerRegistration") != null) {
+					System.out.println("session not null ....." + session.getAttribute("customerRegistration.getFirstName()"));
+					model.addAttribute("registration", (CustomerRegistration) session.getAttribute("customerRegistration"));
+					
+					CustomerRegistration cr = (CustomerRegistration) session
+						    .getAttribute("customerRegistration");
+					System.out.println("CUR ===== > " + cr.getEmail());
+				} else {
+					System.out.println("CUR =====wwwww > ");
+					model.addAttribute("registration", customerRegistration);
+				}
+				
 				model.addAttribute("application", customerApplication);
 				model.addAttribute("contact", customerContact);
 				model.addAttribute("applicant", applicant);
 				model.addAttribute("photographs", customerPhotograph);
+				model.addAttribute("customerId", customerRegistration.getUserId());
 				
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Controller - Null pointer exception...");
 			e.getMessage();
 		}
@@ -68,16 +121,19 @@ public class ViewActionController {
 		
 		System.out.println("Controller - Delete Operation...");
 		System.out.println("Customer ID = " + customerId);
+		
 		int deleteStatus = 0;
 		
 		if(customerId != "") {
 			System.out.println("Customer Id not empty...");
-			deleteStatus = viewApplicationService.deleteApplication(request, response, customerId);
+			deleteStatus = viewApplicationService.deleteApplication(request, response, session, customerId);
 		}
 		
 		model.addAttribute("deleteStatus", deleteStatus);
+		model.addAttribute("accountId", customerId);
 		
 		return "/actions/showApplication";
+		//return "redirect:gcl/actions/showApplication";
 	}
 	
 	@RequestMapping(value = "/skipSubmission", method = RequestMethod.POST)

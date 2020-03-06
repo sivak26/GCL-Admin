@@ -47,6 +47,12 @@
 				padding-left: 35px;
 			}
 		</style>
+		
+		<script type="text/javascript">
+			function selectedAction(action) {
+				document.getElementById("nextAction").value = action;
+			}
+		</script>
 	</head>
 	<body>
 		<div class="main-section">
@@ -61,14 +67,24 @@
 				</div>
 				
 				<div class="select-links">
+					<h2>Choose actions listed below</h2>
+				
+					<form id="requestAction" name="requestAction" action="customerAction" method="get">
+						<input type="hidden" id="nextAction" name="nextAction" value="" />
+						<input type="submit" id="getApplication" value="SHOW APPLICATION" onclick="selectedAction('showApplication')"/>
+						<input type="submit" id="editApplication" value="EDIT APPLICATION" onclick="selectedAction('editApplication')"/>
+					</form>
+				</div>
+				
+				<!-- <div class="select-links">
 					<ul>
-						<li><a href="gcl/actions/showApplication.jsp">SHOW APPLICATION</a></li>
+						<li><a href="gcl/actions/customerAction?nextAction=/actions/showApplication/">SHOW APPLICATION</a></li>
 						<li><a href="gcl/actions/editApplication.jsp">EDIT APPLICATION</a></li>
 						<li><a href="gcl/actions/reviewActions.jsp">REVIEW APPLICATION</a></li>
 						<li><a href="gcl/actions/applicationActions.jsp">APPLICATION / PAYMENT</a></li>
 						<li><a href="gcl/actions/photoUpload.jsp">PHOTO UPLOAD</a></li>
 					</ul>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</body>

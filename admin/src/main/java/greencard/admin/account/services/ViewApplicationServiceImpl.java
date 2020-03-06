@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 	@Override
 	public CustomerRegistration getRegistrationDetails(HttpServletRequest request, 
 			HttpServletResponse response, 
+			HttpSession session, 
 			String accountId) {
 		
 		System.out.println("Service - Customer Service called ...");
@@ -41,7 +43,9 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 			
 			customerRegistration = customerServiceDAO.getRegistration(accountId);
 			
-		}catch (Exception e) {
+			session.setAttribute("customerRegistration", customerRegistration);
+			
+		} catch (Exception e) {
 			System.out.println("Service - Null pointer exception ...");
 			e.getMessage();
 		}
@@ -70,12 +74,13 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 	@Override
 	public int deleteApplication(HttpServletRequest request, 
 			HttpServletResponse response, 
+			HttpSession session, 
 			String customerId) {
 		System.out.println("Service - Delete operation Starts...");
 		
 		int deleteStatus = 0;
 		
-		customerRegistration = getRegistrationDetails(request, response, customerId);
+		customerRegistration = getRegistrationDetails(request, response, session, customerId);
 		
 		String emailId = customerRegistration.getEmail();
 		
