@@ -81,6 +81,7 @@
 					<p>This customer's application was expired. Kindly inform the customer to upgrade the payment for upcoming DV-Lotteries.</p>
 					<p>We will not submit this customer for upcoming DV-Lottery, Because the application is in Submission Skip list.</p>
 					<p>This application was deleted.</p>
+					<p>One of the child age is more than 18 years. As per the Govt rules, above 18 age should apply greencard separatly. So inform user and remove the child.</p>
 				</div>
 				
 				

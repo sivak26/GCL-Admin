@@ -16,7 +16,7 @@ import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
 import greencard.admin.account.model.CustomerPhotograph;
 import greencard.admin.account.model.CustomerRegistration;
-import greencard.admin.account.services.ViewApplicationService;
+import greencard.admin.account.services.CustomerApplicationService;
 
 @Controller
 public class ViewActionController {
@@ -26,7 +26,7 @@ public class ViewActionController {
 	public static String SELECT_ACTION_PAGE = "actions";
 	
 	@Autowired
-	ViewApplicationService viewApplicationService;
+	CustomerApplicationService customerApplicationService;
 	
 	CustomerRegistration customerRegistration;
 	
@@ -78,13 +78,13 @@ public class ViewActionController {
 			if (accountId != null && accountId != "") {
 				System.out.println("Controller - AccountID exists...");
 				
-				CustomerRegistration customerRegistration = viewApplicationService.getRegistrationDetails(request, response, session, accountId);
+				CustomerRegistration customerRegistration = customerApplicationService.getRegistrationDetails(request, response, session, accountId);
 				
-				CustomerContact customerContact = viewApplicationService.getContactDetails(request, response, session, accountId);
+				CustomerContact customerContact = customerApplicationService.getContactDetails(request, response, session, accountId);
 				
-				CustomerApplication customerApplication = viewApplicationService.getApplicationDetails(request, response, session, accountId);
+				CustomerApplication customerApplication = customerApplicationService.getApplicationDetails(request, response, session, accountId);
 				
-				Applicant applicant = viewApplicationService.getApplicant(request, response, session, customerApplication.getApplicationId());
+				Applicant applicant = customerApplicationService.getApplicant(request, response, session, customerApplication.getApplicationId());
 				
 				//CustomerPhotograph customerPhotograph = viewApplicationService.getPhotographs(request, response, session, accountId);
 
@@ -100,7 +100,7 @@ public class ViewActionController {
 			System.out.println("Controller - Null pointer exception...");
 			e.getMessage();
 		}
-		return "/actions/showApplication";
+		return SHOW_APPLICATION_PAGE;
 	}
 	
 	@RequestMapping(value = "/deleteApplication", method = RequestMethod.POST)
@@ -118,11 +118,11 @@ public class ViewActionController {
 		
 		if(customerId != "") {
 			System.out.println("Customer Id not empty...");
-			deleteStatus = viewApplicationService.deleteApplication(request, response, session, customerId);
+			deleteStatus = customerApplicationService.deleteApplication(request, response, session, customerId);
 		}
 		
 		if (deleteStatus == 1) {
-			customerRegistration = viewApplicationService.getRegistrationDetails(request, response, session, customerId);
+			customerRegistration = customerApplicationService.getRegistrationDetails(request, response, session, customerId);
 		}
 		
 		model.addAttribute("deleteStatus", deleteStatus);
@@ -132,7 +132,7 @@ public class ViewActionController {
 		model.addAttribute("application", session.getAttribute("customerApplication"));
 		model.addAttribute("applicant", session.getAttribute("applicant"));
 		
-		return "/actions/showApplication";
+		return SHOW_APPLICATION_PAGE;
 		//return "redirect:gcl/actions/showApplication";
 	}
 	
@@ -147,7 +147,7 @@ public class ViewActionController {
 		int skipStatus = 0;
 		
 		if (customerId != "") {
-			skipStatus = viewApplicationService.skipFromSubmission(request, response, session, customerId);
+			skipStatus = customerApplicationService.skipFromSubmission(request, response, session, customerId);
 		}
 		
 		model.addAttribute("skipStatus", skipStatus);
@@ -157,7 +157,7 @@ public class ViewActionController {
 		model.addAttribute("application", session.getAttribute("customerApplication"));
 		model.addAttribute("applicant", session.getAttribute("applicant"));
 		
-		return "/actions/showApplication";
+		return SHOW_APPLICATION_PAGE;
 	}
 	
 	@RequestMapping(value = "/addToSubmission", method = RequestMethod.POST)
@@ -170,7 +170,7 @@ public class ViewActionController {
 		int addSubmissionStatus = 0;
 				
 		if (customerId != "") {
-			addSubmissionStatus = viewApplicationService.addToSubmission(request, response, session, customerId);
+			addSubmissionStatus = customerApplicationService.addToSubmission(request, response, session, customerId);
 		}
 		
 		model.addAttribute("addSubmissionStatus", addSubmissionStatus);
@@ -182,7 +182,7 @@ public class ViewActionController {
 		model.addAttribute("applicant", session.getAttribute("applicant"));
 		
 		
-		return "/actions/showApplication";
+		return SHOW_APPLICATION_PAGE;
 	}
 
 }

@@ -26,5 +26,8 @@ public interface CustomerServiceDAO {
 	void addToSubmission(SkipSubmission skipSubmission);
 	
 	CustomerPhotograph getPhotograph(int userId);
+	
+	int updateCustomerRegistration(String customerId, String customerEmail, String customerName, 
+			String customerPassword, String customerPhone, String customerMobile);
 
 }

@@ -329,5 +329,46 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 		
 		return customerPhotograph;
 	}
+	
+	@Override
+	public int updateCustomerRegistration(String customerId, String customerEmail, String customerName,
+			String customerPassword, String customerPhone, String customerMobile) {
+		
+		System.out.println("Edit Applicaiton Repository...");
+		
+		int updateStatus = 0;
+		int userId = Integer.parseInt(customerId);
+		
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			
+			session = dbSession.getSession();
+			transaction = session.beginTransaction();
+			
+			Query query = session.getNamedQuery("update_registration");
+			query.setString("emailId", customerEmail);
+			query.setString("name", customerName);
+			query.setString("password", customerPassword);
+			query.setString("phone", customerPhone);
+			query.setString("mobile", customerMobile);
+			query.setInteger("customerId", userId);
+			
+			updateStatus = query.executeUpdate();
+			
+			transaction.commit();
+			
+		} catch (Exception e) {
+			System.out.println("Database Error...");
+			e.getMessage();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return updateStatus;
+	}
 
 }
