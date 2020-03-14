@@ -28,6 +28,8 @@ public class ViewActionController {
 	@Autowired
 	ViewApplicationService viewApplicationService;
 	
+	CustomerRegistration customerRegistration;
+	
 	@RequestMapping(value = "/customerAction", method = RequestMethod.GET)
 	public String actionForCustomer(HttpServletRequest request,  
 			HttpServletResponse response, 
@@ -78,30 +80,19 @@ public class ViewActionController {
 				
 				CustomerRegistration customerRegistration = viewApplicationService.getRegistrationDetails(request, response, session, accountId);
 				
-				CustomerContact customerContact = viewApplicationService.getContactDetails(request, response, accountId);
+				CustomerContact customerContact = viewApplicationService.getContactDetails(request, response, session, accountId);
 				
-				CustomerApplication customerApplication = viewApplicationService.getApplicationDetails(request, response, accountId);
+				CustomerApplication customerApplication = viewApplicationService.getApplicationDetails(request, response, session, accountId);
 				
-				Applicant applicant = viewApplicationService.getApplicant(request, response, customerApplication.getApplicationId());
+				Applicant applicant = viewApplicationService.getApplicant(request, response, session, customerApplication.getApplicationId());
 				
-				CustomerPhotograph customerPhotograph = viewApplicationService.getPhotographs(request, response, accountId);
+				//CustomerPhotograph customerPhotograph = viewApplicationService.getPhotographs(request, response, session, accountId);
 
-				if (session.getAttribute("customerRegistration") != null) {
-					System.out.println("session not null ....." + session.getAttribute("customerRegistration.getFirstName()"));
-					model.addAttribute("registration", (CustomerRegistration) session.getAttribute("customerRegistration"));
-					
-					CustomerRegistration cr = (CustomerRegistration) session
-						    .getAttribute("customerRegistration");
-					System.out.println("CUR ===== > " + cr.getEmail());
-				} else {
-					System.out.println("CUR =====wwwww > ");
-					model.addAttribute("registration", customerRegistration);
-				}
-				
+				model.addAttribute("registration", customerRegistration);
 				model.addAttribute("application", customerApplication);
 				model.addAttribute("contact", customerContact);
 				model.addAttribute("applicant", applicant);
-				model.addAttribute("photographs", customerPhotograph);
+				//model.addAttribute("photographs", customerPhotograph);
 				model.addAttribute("customerId", customerRegistration.getUserId());
 				
 			}
@@ -123,22 +114,32 @@ public class ViewActionController {
 		System.out.println("Customer ID = " + customerId);
 		
 		int deleteStatus = 0;
+	    customerRegistration = (CustomerRegistration) session.getAttribute("customerRegistration");
 		
 		if(customerId != "") {
 			System.out.println("Customer Id not empty...");
 			deleteStatus = viewApplicationService.deleteApplication(request, response, session, customerId);
 		}
 		
+		if (deleteStatus == 1) {
+			customerRegistration = viewApplicationService.getRegistrationDetails(request, response, session, customerId);
+		}
+		
 		model.addAttribute("deleteStatus", deleteStatus);
-		model.addAttribute("accountId", customerId);
+		model.addAttribute("customerId", customerId);
+		model.addAttribute("registration", customerRegistration);
+		model.addAttribute("contact", session.getAttribute("customerContact"));
+		model.addAttribute("application", session.getAttribute("customerApplication"));
+		model.addAttribute("applicant", session.getAttribute("applicant"));
 		
 		return "/actions/showApplication";
 		//return "redirect:gcl/actions/showApplication";
 	}
 	
-	@RequestMapping(value = "/skipSubmission", method = RequestMethod.POST)
+	@RequestMapping(value = "/skipFromSubmission", method = RequestMethod.POST)
 	public String skipSubmission(HttpServletRequest request,
 			HttpServletResponse response,
+			HttpSession session, 
 			@RequestParam("customerId") String customerId,
 			Model model) {
 		
@@ -146,11 +147,40 @@ public class ViewActionController {
 		int skipStatus = 0;
 		
 		if (customerId != "") {
-			skipStatus = viewApplicationService.skipSubmission(request, response, customerId);
+			skipStatus = viewApplicationService.skipFromSubmission(request, response, session, customerId);
 		}
-		System.out.println("Controller - Skip Status is " + skipStatus);
 		
 		model.addAttribute("skipStatus", skipStatus);
+		model.addAttribute("customerId", customerId);
+		model.addAttribute("registration", session.getAttribute("customerRegistration"));
+		model.addAttribute("contact", session.getAttribute("customerContact"));
+		model.addAttribute("application", session.getAttribute("customerApplication"));
+		model.addAttribute("applicant", session.getAttribute("applicant"));
+		
+		return "/actions/showApplication";
+	}
+	
+	@RequestMapping(value = "/addToSubmission", method = RequestMethod.POST)
+	public String addToSubmission(HttpServletRequest request, 
+			HttpServletResponse response,
+			HttpSession session,
+			@RequestParam("customerId") String customerId, 
+			Model model) {
+		
+		int addSubmissionStatus = 0;
+				
+		if (customerId != "") {
+			addSubmissionStatus = viewApplicationService.addToSubmission(request, response, session, customerId);
+		}
+		
+		model.addAttribute("addSubmissionStatus", addSubmissionStatus);
+		
+		model.addAttribute("customerId", customerId);
+		model.addAttribute("registration", session.getAttribute("customerRegistration"));
+		model.addAttribute("contact", session.getAttribute("customerContact"));
+		model.addAttribute("application", session.getAttribute("customerApplication"));
+		model.addAttribute("applicant", session.getAttribute("applicant"));
+		
 		
 		return "/actions/showApplication";
 	}

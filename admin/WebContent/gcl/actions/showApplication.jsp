@@ -1,4 +1,3 @@
-<%@page import="greencard.admin.account.model.CustomerRegistration"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     
@@ -65,13 +64,6 @@
 		</style>
 	</head>
 	<body>
-	<%=session.getAttribute("customerRegistration")%>
-	
-	<%
-	CustomerRegistration registration = (CustomerRegistration) session.getAttribute("customerRegistration");
-	%>
-	
-	<%=registration.getEmail()%>
 		<div class="main-section">
 			<div class="content-section">
 			
@@ -83,6 +75,14 @@
 						<a href="logout" style="color: white;">SignOut</a>
 					</div>
 				</div>
+				
+				
+				<div class="common-information" style="display:none">
+					<p>This customer's application was expired. Kindly inform the customer to upgrade the payment for upcoming DV-Lotteries.</p>
+					<p>We will not submit this customer for upcoming DV-Lottery, Because the application is in Submission Skip list.</p>
+					<p>This application was deleted.</p>
+				</div>
+				
 				
 				<div class="application-section">
 					<div class="top-action">
@@ -96,23 +96,32 @@
 						</div>
 					
 						<div class="skip-section">
-							<form name="skipSubmission" action="/admin/skipSubmission" method="post">
+							<form name="skipFromSubmission" action="/admin/skipFromSubmission" method="post">
 								<input type="hidden" name="customerId" value="${customerId}" />
-								<input class="action-btn" type="submit" name="skipSubmission" value="Skip Submission" />
+								<input class="action-btn" type="submit" name="skipFromSubmission" value="Skip Submission" />
 							</form>
 							
 							<h2>Skip Status = ${skipStatus}</h2>
 						</div>
+						
+						<div class="skip-section">
+							<form name="addToSubmission" action="/admin/addToSubmission" method="post">
+								<input type="hidden" name="customerId" value="${customerId}" />
+								<input class="action-btn" type="submit" name="addToSubmission" value="Add To Submission" />
+							</form>
+							
+							<h2>Skip Status = ${addSubmissionStatus}</h2>
+						</div>
 					</div>
 						
-					<div class="getAccount">
+					<!-- <div class="getAccount">
 						<h2>Enter AccountID to show application</h2>
 					
 						<form name="getApplication" action="/admin/showApplication" method="post">
 							<label>Account ID :</label> <input type="text" name="accountId" value="" />
 							<input class="action-btn" type="submit" name="getApplication" value="Show Details" />
 						</form>
-					</div>
+					</div> -->
 				
 					<div class="app-details">
 						<div class="register-section">
@@ -187,7 +196,7 @@
 							</ul>
 						</div>
 
-						<div class="photo-section">
+						<!-- <div class="photo-section">
 						    <h2>Photographs - Details</h2>
 							
 							<ul>
@@ -200,7 +209,7 @@
 								<li>FaceDetectStatus : ${photographs.getFaceRejectedFlaggedStatus()} </li>
 								<li>FaceProcessorStatus : ${photographs.getFaceProcessorErrorFlaggedStatus()} </li>
 							</ul>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>

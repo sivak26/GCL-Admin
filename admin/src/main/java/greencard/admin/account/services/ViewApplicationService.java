@@ -18,15 +18,18 @@ public interface ViewApplicationService {
 			String accountId);
 	
 	CustomerApplication getApplicationDetails(HttpServletRequest request, 
-			HttpServletResponse response, 
+			HttpServletResponse response,
+			HttpSession session,
 			String accountId);
 	
 	CustomerContact getContactDetails(HttpServletRequest request, 
-			HttpServletResponse response, 
+			HttpServletResponse response,
+			HttpSession session,
 			String accountId);
 	
 	Applicant getApplicant(HttpServletRequest request, 
-			HttpServletResponse response, 
+			HttpServletResponse response,
+			HttpSession session,
 			int applicationId);
 	
 	int deleteApplication(HttpServletRequest request, 
@@ -34,11 +37,18 @@ public interface ViewApplicationService {
 			HttpSession session, 
 			String cutomerId);
 
-	int skipSubmission(HttpServletRequest request,
+	int skipFromSubmission(HttpServletRequest request,
 			HttpServletResponse response,
+			HttpSession session,
+			String customerId);
+	
+	int addToSubmission(HttpServletRequest request,
+			HttpServletResponse response,
+			HttpSession session,
 			String customerId);
 	
 	CustomerPhotograph getPhotographs(HttpServletRequest request,
 			HttpServletResponse response,
+			HttpSession session,
 			String customerId);
 }

@@ -1,8 +1,5 @@
 package greencard.admin.account.services;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -43,10 +40,12 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 			
 			customerRegistration = customerServiceDAO.getRegistration(accountId);
 			
-			session.setAttribute("customerRegistration", customerRegistration);
+			if (customerRegistration != null) {
+				session.setAttribute("customerRegistration", customerRegistration);
+			}
 			
 		} catch (Exception e) {
-			System.out.println("Service - Null pointer exception ...");
+			System.out.println("Null pointer exception - No Registration details found for this customer...");
 			e.getMessage();
 		}
 		
@@ -54,7 +53,9 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 	}
 	
 	@Override
-	public CustomerApplication getApplicationDetails(HttpServletRequest request, HttpServletResponse response,
+	public CustomerApplication getApplicationDetails(HttpServletRequest request, 
+			HttpServletResponse response,
+			HttpSession session,
 			String accountId) {
 		System.out.println("Service - Application Called...");
 		
@@ -62,8 +63,12 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 			
 			customerApplication = customerServiceDAO.getApplication(accountId);
 			
+			if (customerApplication != null) {
+				session.setAttribute("customerApplication", customerApplication);
+			}
+			
 		} catch (Exception e) {
-			System.out.println("Null pointer exception ...");
+			System.out.println("Null pointer exception - No Application details found for this customer...");
 			e.getMessage();
 		}
 		
@@ -94,33 +99,40 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 	}
 	
 	@Override
-	public int skipSubmission(HttpServletRequest request, 
+	public int skipFromSubmission(HttpServletRequest request, 
 			HttpServletResponse response, 
+			HttpSession session,
 			String customerId) {
 		
 		System.out.println("Service - Skip operation Starts..." + customerId);
 		
 		int skipStatus = 0;
+		int skippedAccount;
 		
 		int userId = Integer.parseInt(customerId);
 		
-		Date date= new Date();
-		long time = date.getTime();
-		Timestamp ts = new Timestamp(time);
+//		Date date= new Date();
+//		long time = date.getTime();
+//		Timestamp timeStamp = new Timestamp(time);
 		
 		try {
-			skipSubmission = new SkipSubmission();
-			skipSubmission.setUserId(userId);
-			skipSubmission.setUpdatedDate(ts);
 			
 			skipSubmission = customerServiceDAO.verifySkipStatus(userId);
 			
-			if (skipSubmission != null) {
-				System.out.println("Already skiped");
-				return skipStatus;
-			}
+			if (skipSubmission == null) {
+				System.out.println("This account not found in database ");
+				
+				skipSubmission = new SkipSubmission();
+				skipSubmission.setUserId(userId);
+				//skipSubmission.setUpdatedDate(timeStamp);
 			
-			skipStatus = customerServiceDAO.skipAccount(skipSubmission);
+				skippedAccount = customerServiceDAO.skipAccount(skipSubmission);
+			
+				if (skippedAccount != 0) {
+					System.out.println("Inserted into SkipList....");
+					skipStatus = 1;
+				}
+			}
 			
 		} catch (Exception e) {
 			System.out.println("Throw null pointer exception ...");
@@ -131,18 +143,57 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 	}
 	
 	@Override
-	public CustomerContact getContactDetails(HttpServletRequest request, HttpServletResponse response,
-			String accountId) {
-		System.out.println("Service - Customer Service called ...");
+	public int addToSubmission(HttpServletRequest request, 
+			HttpServletResponse response, 
+			HttpSession session,
+			String customerId) {
+		
+		int addSubmissionStatus = 0;
+		
+		int userId = Integer.parseInt(customerId);
+		
 		try {
 			
-			System.out.println("Getting Contact Details ...");
+			skipSubmission = customerServiceDAO.verifySkipStatus(userId);
+			
+			if (skipSubmission == null) {
+				System.out.println("This account not found OR already deleted from database ");
+				return addSubmissionStatus;
+			}
+				
+			customerServiceDAO.addToSubmission(skipSubmission);
+			
+			skipSubmission = customerServiceDAO.verifySkipStatus(userId);
+			
+			if (skipSubmission == null) {
+				System.out.println("This account deleted from database ");
+				addSubmissionStatus = 1;
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Throw null pointer exception ...");
+			e.getMessage();
+		}
+		
+		return addSubmissionStatus;
+	}
+	
+	@Override
+	public CustomerContact getContactDetails(HttpServletRequest request, 
+			HttpServletResponse response,
+			HttpSession session,
+			String accountId) {
+		
+		try {
 			
 			customerContact = customerServiceDAO.getContact(accountId);
-			System.out.println("City from DAO - " +customerContact.getCity());
 			
-		}catch (Exception e) {
-			System.out.println("Service - Null pointer exception Contact...");
+			if (customerContact != null) {
+				session.setAttribute("customerContact", customerContact);
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Null pointer exception - No Contact details found for this customer...");
 			e.getMessage();
 		}
 		
@@ -152,18 +203,19 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 	@Override
 	public Applicant getApplicant(HttpServletRequest request, 
 			HttpServletResponse response, 
+			HttpSession session,
 			int applicationId) {
 		
-		System.out.println("Service - Customer Service called ...");
 		try {
 			
-			System.out.println("Getting Applicant Details ...");
-			
 			applicant = customerServiceDAO.getApplicant(applicationId);
-			System.out.println("City from DAO - " + applicant.getFirstName());
+			
+			if (applicant != null) {
+				session.setAttribute("applicant", applicant);
+			}
 			
 		} catch (Exception e) {
-			System.out.println("Service - Null pointer exception Applicant...");
+			System.out.println("Null pointer exception - No Applicant details found for this customer...");
 			e.getMessage();
 		}
 		
@@ -171,18 +223,23 @@ public class ViewApplicationServiceImpl implements ViewApplicationService {
 	}
 	
 	@Override
-	public CustomerPhotograph getPhotographs(HttpServletRequest request, HttpServletResponse response,
+	public CustomerPhotograph getPhotographs(HttpServletRequest request, 
+			HttpServletResponse response,
+			HttpSession session,
 			String customerId) {
 		
-		System.out.println("Photographs service called ...");
-		
 		try {
+			
 			int userId = Integer.parseInt(customerId);
 			
 			customerPhotograph = customerServiceDAO.getPhotograph(userId);
 			
+			if (customerPhotograph != null) {
+				session.setAttribute("customerPhotograph", customerPhotograph);
+			}
+			
 		} catch (Exception e) {
-			System.out.println(">>>>>> Null pointer Exception ...");
+			System.out.println("Null pointer exception - No Photographs details found for this customer...");
 			e.getMessage();
 		}
 		return customerPhotograph;

@@ -133,35 +133,10 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 	}
 	
 	@Override
-	public int skipAccount(SkipSubmission skipSubmission) {
-		
-		System.out.println("Database - Skiping...");
-		int status = 0;
-		Session session = null;
-		Transaction transaction;
-		
-		try {
-			session = dbSession.getSession();
-			transaction = session.beginTransaction();
-			
-			session.persist(skipSubmission);
-			transaction.commit();
-			System.out.println(" >>>>>>>> Status is >>>>>>> = " + status);
-			
-		} catch (Exception e) {
-			e.getMessage();
-		} finally {
-			if (session != null) {
-				session.close();
-			}
-		}
-		return status;
-	}
-	
-	@Override
 	public SkipSubmission verifySkipStatus(int userId) {
 		System.out.println("Checking account skiped or not ...");
 		
+		skipSubmission = null;
 		Session session = null;
 		Transaction transaction;
 		
@@ -177,9 +152,9 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 			Iterator iterator = list.iterator();
 			
 			while (iterator.hasNext()) {
+				System.out.println("===== > Already in skip list ..............");
 				skipSubmission = (SkipSubmission) iterator.next();
 			}
-			
 			transaction.commit();
 		} catch (Exception e) {
 			System.out.println("Database error ...");
@@ -191,6 +166,58 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 		}
 		
 		return skipSubmission;
+	}
+	
+	@Override
+	public int skipAccount(SkipSubmission skipSubmission) {
+		
+		System.out.println("Database - Skiping...");
+		int skippedAccount = 0;
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			session = dbSession.getSession();
+			transaction = session.beginTransaction();
+			
+			skippedAccount = (int) session.save(skipSubmission);
+			transaction.commit();
+			
+		} catch (Exception e) {
+			e.getMessage();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		return skippedAccount;
+	}
+	
+	@Override
+	public void addToSubmission(SkipSubmission skipSubmission) {
+		
+		System.out.println("Deleting customer from SkipList ");
+		
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			
+			session = dbSession.getSession();
+			transaction = session.beginTransaction();
+			
+			session.delete(skipSubmission);
+			
+			transaction.commit();
+			
+		} catch (Exception e) {
+			System.out.println("Database error ...");
+			e.getMessage();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
 	}
 	
 	@Override
@@ -218,7 +245,6 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 			
 			while (iterator.hasNext()) {
 				customerContact = (CustomerContact) iterator.next();
-				
 			}
 			
 			transaction.commit();
@@ -252,12 +278,10 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 			
 			Iterator iterator = list.iterator();
 			
-			System.out.println("==========" + query.list());
 			while (iterator.hasNext()) {
 				applicant = (Applicant) iterator.next();
 				
 			}
-			System.out.println("<>>>>>>>>>>>>>>>> DateOfBirth = " + applicant.getDateOfBirth());
 			
 			transaction.commit();
 		} catch (Exception e) {

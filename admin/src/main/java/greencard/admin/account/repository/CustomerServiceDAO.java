@@ -23,6 +23,8 @@ public interface CustomerServiceDAO {
 	
 	SkipSubmission verifySkipStatus(int userId);
 	
+	void addToSubmission(SkipSubmission skipSubmission);
+	
 	CustomerPhotograph getPhotograph(int userId);
 
 }
