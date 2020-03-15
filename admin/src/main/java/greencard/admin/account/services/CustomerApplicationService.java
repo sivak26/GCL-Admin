@@ -7,6 +7,7 @@ import javax.servlet.http.HttpSession;
 import greencard.admin.account.model.Applicant;
 import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
+import greencard.admin.account.model.CustomerPayment;
 import greencard.admin.account.model.CustomerPhotograph;
 import greencard.admin.account.model.CustomerRegistration;
 
@@ -18,6 +19,11 @@ public interface CustomerApplicationService {
 			String accountId);
 	
 	CustomerApplication getApplicationDetails(HttpServletRequest request, 
+			HttpServletResponse response,
+			HttpSession session,
+			String accountId);
+	
+	CustomerPayment getPaymentDetails(HttpServletRequest request, 
 			HttpServletResponse response,
 			HttpSession session,
 			String accountId);

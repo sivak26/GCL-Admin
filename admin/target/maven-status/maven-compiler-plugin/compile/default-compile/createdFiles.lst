@@ -8,6 +8,7 @@ greencard/admin/App.class
 greencard/admin/account/utils/DBSession.class
 greencard/admin/account/App.class
 greencard/admin/account/controllers/ViewActionController.class
+greencard/admin/account/controllers/ApplicationActionController.class
 greencard/admin/account/services/CustomerApplicationService.class
 greencard/admin/account/repository/AgentDAOImpl.class
 greencard/admin/account/services/CustomerApplicationServiceImpl.class

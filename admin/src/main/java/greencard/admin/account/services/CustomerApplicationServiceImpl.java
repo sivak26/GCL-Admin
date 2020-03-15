@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import greencard.admin.account.model.Applicant;
 import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
+import greencard.admin.account.model.CustomerPayment;
 import greencard.admin.account.model.CustomerPhotograph;
 import greencard.admin.account.model.CustomerRegistration;
 import greencard.admin.account.model.SkipSubmission;
@@ -27,6 +28,7 @@ public class CustomerApplicationServiceImpl implements CustomerApplicationServic
 	Applicant applicant;
 	SkipSubmission skipSubmission;
 	CustomerPhotograph customerPhotograph;
+	CustomerPayment customerPayment;
 
 	@Override
 	public CustomerRegistration getRegistrationDetails(HttpServletRequest request, 
@@ -74,7 +76,31 @@ public class CustomerApplicationServiceImpl implements CustomerApplicationServic
 		
 		return customerApplication;
 	}
-
+	
+	
+	@Override
+	public CustomerPayment getPaymentDetails(HttpServletRequest request, 
+			HttpServletResponse response,
+			HttpSession session, 
+			String accountId) {
+		
+		System.out.println("Customer Application Service Impl - Payment...");
+		
+		try {
+			
+			customerPayment = customerServiceDAO.getPayment(accountId);
+			
+			if (customerPayment != null) {
+				session.setAttribute("customerPayment", customerPayment);
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Null pointer exception - No Payment details found for this customer...");
+		}
+		
+		
+		return customerPayment;
+	}
 	
 	@Override
 	public int deleteApplication(HttpServletRequest request, 

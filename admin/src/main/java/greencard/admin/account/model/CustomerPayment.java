@@ -4,22 +4,31 @@ import java.sql.Timestamp;
 
 public class CustomerPayment {
 	
+	private int paymentId;
+	private int productId;
 	private Timestamp paymentDate;
 	private int paymentMethod;
+	private int promoCode;
 	private String cardName;
-	private int cardtype;
-	private String paymentIPAddress;
 	private String approvalCode;
-	private String ttime;
+	private int oid;
 	private float amount;
 	private String billingAddress1;
-	private String billingAddress2;
-	private String billingCity;
-	private String billingState;
 	private String billingCountry;
-	private String billingZip;
 	
 	
+	public int getPaymentId() {
+		return paymentId;
+	}
+	public void setPaymentId(int paymentId) {
+		this.paymentId = paymentId;
+	}
+	public int getProductId() {
+		return productId;
+	}
+	public void setProductId(int productId) {
+		this.productId = productId;
+	}
 	public Timestamp getPaymentDate() {
 		return paymentDate;
 	}
@@ -32,23 +41,17 @@ public class CustomerPayment {
 	public void setPaymentMethod(int paymentMethod) {
 		this.paymentMethod = paymentMethod;
 	}
+	public int getPromoCode() {
+		return promoCode;
+	}
+	public void setPromoCode(int promoCode) {
+		this.promoCode = promoCode;
+	}
 	public String getCardName() {
 		return cardName;
 	}
 	public void setCardName(String cardName) {
 		this.cardName = cardName;
-	}
-	public int getCardtype() {
-		return cardtype;
-	}
-	public void setCardtype(int cardtype) {
-		this.cardtype = cardtype;
-	}
-	public String getPaymentIPAddress() {
-		return paymentIPAddress;
-	}
-	public void setPaymentIPAddress(String paymentIPAddress) {
-		this.paymentIPAddress = paymentIPAddress;
 	}
 	public String getApprovalCode() {
 		return approvalCode;
@@ -56,11 +59,11 @@ public class CustomerPayment {
 	public void setApprovalCode(String approvalCode) {
 		this.approvalCode = approvalCode;
 	}
-	public String getTtime() {
-		return ttime;
+	public int getOid() {
+		return oid;
 	}
-	public void setTtime(String ttime) {
-		this.ttime = ttime;
+	public void setOid(int oid) {
+		this.oid = oid;
 	}
 	public float getAmount() {
 		return amount;
@@ -74,36 +77,11 @@ public class CustomerPayment {
 	public void setBillingAddress1(String billingAddress1) {
 		this.billingAddress1 = billingAddress1;
 	}
-	public String getBillingAddress2() {
-		return billingAddress2;
-	}
-	public void setBillingAddress2(String billingAddress2) {
-		this.billingAddress2 = billingAddress2;
-	}
-	public String getBillingCity() {
-		return billingCity;
-	}
-	public void setBillingCity(String billingCity) {
-		this.billingCity = billingCity;
-	}
-	public String getBillingState() {
-		return billingState;
-	}
-	public void setBillingState(String billingState) {
-		this.billingState = billingState;
-	}
 	public String getBillingCountry() {
 		return billingCountry;
 	}
 	public void setBillingCountry(String billingCountry) {
 		this.billingCountry = billingCountry;
 	}
-	public String getBillingZip() {
-		return billingZip;
-	}
-	public void setBillingZip(String billingZip) {
-		this.billingZip = billingZip;
-	}
-	
 	
 }

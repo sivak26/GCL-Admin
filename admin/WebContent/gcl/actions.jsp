@@ -73,6 +73,7 @@
 						<input type="hidden" id="nextAction" name="nextAction" value="" />
 						<input type="submit" id="getApplication" value="SHOW APPLICATION" onclick="selectedAction('showApplication')"/>
 						<input type="submit" id="editApplication" value="EDIT APPLICATION" onclick="selectedAction('editApplication')"/>
+						<input type="submit" id="paymentAction" value="PAYMENT ACTIONS" onclick="selectedAction('applicationAction')"/>
 					</form>
 				</div>
 				

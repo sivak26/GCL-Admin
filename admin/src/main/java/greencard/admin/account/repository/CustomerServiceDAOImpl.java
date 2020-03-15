@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import greencard.admin.account.model.Applicant;
 import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
+import greencard.admin.account.model.CustomerPayment;
 import greencard.admin.account.model.CustomerPhotograph;
 import greencard.admin.account.model.CustomerRegistration;
 import greencard.admin.account.model.SkipSubmission;
@@ -29,6 +30,7 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 	Applicant applicant;
 	SkipSubmission skipSubmission;
 	CustomerPhotograph customerPhotograph;
+	CustomerPayment customerPayment;
 
 	@Override
 	public CustomerRegistration getRegistration(String accountId) {
@@ -96,6 +98,46 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 			}
 		System.out.println(customerApplication.getApplicationTakenBy());
 		return customerApplication;
+	}
+	
+	@Override
+	public CustomerPayment getPayment(String accountId) {
+		
+		System.out.println("DAO for payment ...");
+		
+		Session session = null;
+		Transaction transaction;
+		
+		int userId = Integer.parseInt(accountId);
+		
+		try {
+			
+			session = dbSession.getSession();
+			transaction = session.beginTransaction();
+			
+			Query query = session.getNamedQuery("payment_findByAccountId");
+			query.setInteger("accountId", userId);
+			
+			List list = query.list();
+			Iterator iterator = list.iterator();
+			
+			while(iterator.hasNext()) {
+				customerPayment = (CustomerPayment) iterator.next();
+			}
+			
+			transaction.commit();
+			
+		} catch (Exception e) {
+			System.out.println("Error while connecting Database...");
+			e.printStackTrace();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		
+		return customerPayment;
 	}
 	
 	@Override
