@@ -8,7 +8,6 @@ public class CustomerPayment {
 	private int productId;
 	private Timestamp paymentDate;
 	private int paymentMethod;
-	private int promoCode;
 	private String cardName;
 	private String approvalCode;
 	private int oid;
@@ -40,12 +39,6 @@ public class CustomerPayment {
 	}
 	public void setPaymentMethod(int paymentMethod) {
 		this.paymentMethod = paymentMethod;
-	}
-	public int getPromoCode() {
-		return promoCode;
-	}
-	public void setPromoCode(int promoCode) {
-		this.promoCode = promoCode;
 	}
 	public String getCardName() {
 		return cardName;

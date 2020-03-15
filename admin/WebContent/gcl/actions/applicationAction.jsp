@@ -140,7 +140,6 @@
 								<li>Product ID : ${payment.getProductId()} </li>
 								<li>Payment Date : ${payment.getPaymentDate()} </li>
 								<li>Payment Method : ${payment.getPaymentMethod()} </li>
-								<li>PromoCode : ${payment.getPromoCode()} </li>
 								<li>CardName : ${payment.getCardName()} </li>
 								<li>Approval Code : ${payment.getApprovalCode()} </li>
 								<li>User ID : ${payment.getOid()} </li>

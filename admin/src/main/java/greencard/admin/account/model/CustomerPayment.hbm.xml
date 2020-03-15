@@ -11,7 +11,6 @@
 		<property name="productId" column="productId" type="int"/>
 		<property name="paymentDate" column="paymentDate" type="timestamp" />
 		<property name="paymentMethod" column="paymentMethod" type="int" />
-		<property name="promoCode" column="promoCode" type="int"/>
 		<property name="cardName" column="cardName" type="string"/>
 		<property name="approvalCode" column="approvalCode" type="string" />
 		<property name="oid" column="oid" type="int" />
