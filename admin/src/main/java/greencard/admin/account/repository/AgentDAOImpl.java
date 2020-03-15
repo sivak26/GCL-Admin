@@ -80,8 +80,11 @@ public class AgentDAOImpl implements AgentDAO {
 	@Override
 	public Agent findByEmailID(String email) {
 		
+		System.out.println("DB .................... " + email);
+		
 		Session session = null;
 		Transaction transaction;
+		user = null;
 		
 		try {
 			
@@ -95,14 +98,10 @@ public class AgentDAOImpl implements AgentDAO {
 			
 			Iterator iterator = list.iterator();
 			
-			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>");
-			
-			while (iterator.hasNext()) {		
+			while (iterator.hasNext()) {
 				user = (Agent) iterator.next();
-				System.out.println(" email "+user.getEmail());
 			}
-			
-			System.out.println("Final "+user.getEmail());
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

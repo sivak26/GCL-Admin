@@ -6,7 +6,7 @@
 		<session-factory>
 			<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
 			<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/bp</property>
-			<property name="hibernate.connection.username">root</property>
+			<property name="hibernate.connection.username">siva</property>
 			<property name="hibernate.connection.password">welcome0</property>
 			<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>			
 			<property name="hbm2ddl.auto">update</property>
@@ -14,6 +14,12 @@
 			<property name="format_sql">true</property>
 			
 			<mapping resource="greencard/admin/account/model/Agent.hbm.xml"/>
-			<mapping resource="greencard/admin/account/model/Customer.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/CustomerRegistration.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/CustomerApplication.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/CustomerContact.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/Applicant.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/CustomerPhotograph.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/SkipSubmission.hbm.xml"/>
+			<mapping resource="greencard/admin/account/model/CustomerPayment.hbm.xml"/>
 		</session-factory>
 	</hibernate-configuration>

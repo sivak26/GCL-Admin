@@ -16,9 +16,9 @@
 	 
 	 <context:component-scan base-package="greencard.admin.account"/>    
      
-  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">    
-   <property name="prefix" value="/gcl/"></property>    
-   <property name="suffix" value=".jsp"></property>    
+  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+   <property name="prefix" value="/gcl/"></property>
+   <property name="suffix" value=".jsp"></property>
   </bean>
   
 </beans>

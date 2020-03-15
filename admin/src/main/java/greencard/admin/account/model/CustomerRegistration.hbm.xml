@@ -29,4 +29,7 @@
 		<![CDATA[update CustomerRegistration set email = :emailId where userId = :accountId]]>
 	</query>
 	
+	<query name="update_registration">
+		<![CDATA[update CustomerRegistration set email = :emailId, firstName = :name, password = :password, telephone = :phone, mobile = :mobile where userId = :customerId]]>
+	</query>
 </hibernate-mapping>

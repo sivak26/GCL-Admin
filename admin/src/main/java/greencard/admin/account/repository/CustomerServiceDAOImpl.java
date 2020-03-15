@@ -1,7 +1,5 @@
 package greencard.admin.account.repository;
 
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import greencard.admin.account.model.Applicant;
 import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
+import greencard.admin.account.model.CustomerPayment;
 import greencard.admin.account.model.CustomerPhotograph;
 import greencard.admin.account.model.CustomerRegistration;
 import greencard.admin.account.model.SkipSubmission;
@@ -31,6 +30,7 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 	Applicant applicant;
 	SkipSubmission skipSubmission;
 	CustomerPhotograph customerPhotograph;
+	CustomerPayment customerPayment;
 
 	@Override
 	public CustomerRegistration getRegistration(String accountId) {
@@ -101,6 +101,46 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 	}
 	
 	@Override
+	public CustomerPayment getPayment(String accountId) {
+		
+		System.out.println("DAO for payment ...");
+		
+		Session session = null;
+		Transaction transaction;
+		
+		int userId = Integer.parseInt(accountId);
+		
+		try {
+			
+			session = dbSession.getSession();
+			transaction = session.beginTransaction();
+			
+			Query query = session.getNamedQuery("payment_findByAccountId");
+			query.setInteger("accountId", userId);
+			
+			List list = query.list();
+			Iterator iterator = list.iterator();
+			
+			while(iterator.hasNext()) {
+				customerPayment = (CustomerPayment) iterator.next();
+			}
+			
+			transaction.commit();
+			
+		} catch (Exception e) {
+			System.out.println("Error while connecting Database...");
+			e.printStackTrace();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		
+		return customerPayment;
+	}
+	
+	@Override
 	public int deleteByAccountId(String customerId, String emailId) {
 		System.out.println("Database - Deleting...");
 		int status = 0;
@@ -135,35 +175,10 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 	}
 	
 	@Override
-	public int skipAccount(SkipSubmission skipSubmission) {
-		
-		System.out.println("Database - Skiping...");
-		int status = 0;
-		Session session = null;
-		Transaction transaction;
-		
-		try {
-			session = dbSession.getSession();
-			transaction = session.beginTransaction();
-			
-			session.persist(skipSubmission);
-			transaction.commit();
-			System.out.println(" >>>>>>>> Status is >>>>>>> = " + status);
-			
-		} catch (Exception e) {
-			e.getMessage();
-		} finally {
-			if (session != null) {
-				session.close();
-			}
-		}
-		return status;
-	}
-	
-	@Override
 	public SkipSubmission verifySkipStatus(int userId) {
 		System.out.println("Checking account skiped or not ...");
 		
+		skipSubmission = null;
 		Session session = null;
 		Transaction transaction;
 		
@@ -179,9 +194,9 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 			Iterator iterator = list.iterator();
 			
 			while (iterator.hasNext()) {
+				System.out.println("===== > Already in skip list ..............");
 				skipSubmission = (SkipSubmission) iterator.next();
 			}
-			
 			transaction.commit();
 		} catch (Exception e) {
 			System.out.println("Database error ...");
@@ -193,6 +208,58 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 		}
 		
 		return skipSubmission;
+	}
+	
+	@Override
+	public int skipAccount(SkipSubmission skipSubmission) {
+		
+		System.out.println("Database - Skiping...");
+		int skippedAccount = 0;
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			session = dbSession.getSession();
+			transaction = session.beginTransaction();
+			
+			skippedAccount = (int) session.save(skipSubmission);
+			transaction.commit();
+			
+		} catch (Exception e) {
+			e.getMessage();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		return skippedAccount;
+	}
+	
+	@Override
+	public void addToSubmission(SkipSubmission skipSubmission) {
+		
+		System.out.println("Deleting customer from SkipList ");
+		
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			
+			session = dbSession.getSession();
+			transaction = session.beginTransaction();
+			
+			session.delete(skipSubmission);
+			
+			transaction.commit();
+			
+		} catch (Exception e) {
+			System.out.println("Database error ...");
+			e.getMessage();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
 	}
 	
 	@Override
@@ -220,7 +287,6 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 			
 			while (iterator.hasNext()) {
 				customerContact = (CustomerContact) iterator.next();
-				
 			}
 			
 			transaction.commit();
@@ -254,12 +320,10 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 			
 			Iterator iterator = list.iterator();
 			
-			System.out.println("==========" + query.list());
 			while (iterator.hasNext()) {
 				applicant = (Applicant) iterator.next();
 				
 			}
-			System.out.println("<>>>>>>>>>>>>>>>> DateOfBirth = " + applicant.getDateOfBirth());
 			
 			transaction.commit();
 		} catch (Exception e) {
@@ -306,6 +370,47 @@ public class CustomerServiceDAOImpl implements CustomerServiceDAO {
 		}
 		
 		return customerPhotograph;
+	}
+	
+	@Override
+	public int updateCustomerRegistration(String customerId, String customerEmail, String customerName,
+			String customerPassword, String customerPhone, String customerMobile) {
+		
+		System.out.println("Edit Applicaiton Repository...");
+		
+		int updateStatus = 0;
+		int userId = Integer.parseInt(customerId);
+		
+		Session session = null;
+		Transaction transaction;
+		
+		try {
+			
+			session = dbSession.getSession();
+			transaction = session.beginTransaction();
+			
+			Query query = session.getNamedQuery("update_registration");
+			query.setString("emailId", customerEmail);
+			query.setString("name", customerName);
+			query.setString("password", customerPassword);
+			query.setString("phone", customerPhone);
+			query.setString("mobile", customerMobile);
+			query.setInteger("customerId", userId);
+			
+			updateStatus = query.executeUpdate();
+			
+			transaction.commit();
+			
+		} catch (Exception e) {
+			System.out.println("Database Error...");
+			e.getMessage();
+		} finally {
+			if (session != null) {
+				session.close();
+			}
+		}
+		
+		return updateStatus;
 	}
 
 }

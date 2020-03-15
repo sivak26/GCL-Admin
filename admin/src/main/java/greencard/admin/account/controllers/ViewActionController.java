@@ -16,47 +16,91 @@ import greencard.admin.account.model.CustomerApplication;
 import greencard.admin.account.model.CustomerContact;
 import greencard.admin.account.model.CustomerPhotograph;
 import greencard.admin.account.model.CustomerRegistration;
-import greencard.admin.account.services.ViewApplicationService;
+import greencard.admin.account.services.CustomerApplicationService;
 
 @Controller
 public class ViewActionController {
 	
-	@Autowired
-	ViewApplicationService viewApplicationService;
+	public static String ACTION_FOR_CUSTMER_PAGE = "/actions/popups/actionForCustomer";
+	public static String SHOW_APPLICATION_PAGE = "/actions/showApplication";
+	public static String SELECT_ACTION_PAGE = "actions";
 	
+	@Autowired
+	CustomerApplicationService customerApplicationService;
+	
+	CustomerRegistration customerRegistration;
+	
+	@RequestMapping(value = "/customerAction", method = RequestMethod.GET)
+	public String actionForCustomer(HttpServletRequest request,  
+			HttpServletResponse response, 
+			@RequestParam("nextAction") String nextAction, 
+			Model model) {
+		
+		System.out.println("Next Action is = " + nextAction);
+		
+		if (nextAction != null && nextAction != "") {
+			
+			model.addAttribute("nextAction", nextAction);
+			return ACTION_FOR_CUSTMER_PAGE;
+			
+		}
+		
+		return SELECT_ACTION_PAGE;
+		
+	}
+	
+	/*@RequestMapping(value = "/showApplication", method = RequestMethod.GET)
+	public String viewApplication(HttpServletRequest request, 
+			HttpServletResponse response, 
+			@RequestParam("accountId") String accountId, 
+			Model model) {
+		
+		System.out.println("Show Application GET ......");
+		
+		if (accountId != null && accountId != "") {
+			model.addAttribute("accountId", accountId);
+			return SHOW_APPLICATION_PAGE;
+		}
+		
+		return SELECT_ACTION_PAGE;
+	}*/
 	
 	@RequestMapping(value = "/showApplication", method = RequestMethod.POST)
 	public String viewApplication (HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestParam("accountId") String accountId,
+			HttpSession session, 
+			@RequestParam("accountId") String accountId,  
 			Model model) {
+		
+		System.out.println("Account ==> " + accountId);
 		
 		try {
 			if (accountId != null && accountId != "") {
 				System.out.println("Controller - AccountID exists...");
 				
-				CustomerRegistration customerRegistration = viewApplicationService.getRegistrationDetails(request, response, accountId);
+				CustomerRegistration customerRegistration = customerApplicationService.getRegistrationDetails(request, response, session, accountId);
 				
-				CustomerContact customerContact = viewApplicationService.getContactDetails(request, response, accountId);
+				CustomerContact customerContact = customerApplicationService.getContactDetails(request, response, session, accountId);
 				
-				CustomerApplication customerApplication = viewApplicationService.getApplicationDetails(request, response, accountId);
+				CustomerApplication customerApplication = customerApplicationService.getApplicationDetails(request, response, session, accountId);
 				
-				Applicant applicant = viewApplicationService.getApplicant(request, response, customerApplication.getApplicationId());
+				Applicant applicant = customerApplicationService.getApplicant(request, response, session, customerApplication.getApplicationId());
 				
-				CustomerPhotograph customerPhotograph = viewApplicationService.getPhotographs(request, response, accountId);
-								
+				//CustomerPhotograph customerPhotograph = viewApplicationService.getPhotographs(request, response, session, accountId);
+
 				model.addAttribute("registration", customerRegistration);
 				model.addAttribute("application", customerApplication);
 				model.addAttribute("contact", customerContact);
 				model.addAttribute("applicant", applicant);
-				model.addAttribute("photographs", customerPhotograph);
+				//model.addAttribute("photographs", customerPhotograph);
+				model.addAttribute("customerId", customerRegistration.getUserId());
 				
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Controller - Null pointer exception...");
 			e.getMessage();
 		}
-		return "/actions/showApplication";
+		return SHOW_APPLICATION_PAGE;
 	}
 	
 	@RequestMapping(value = "/deleteApplication", method = RequestMethod.POST)
@@ -68,21 +112,34 @@ public class ViewActionController {
 		
 		System.out.println("Controller - Delete Operation...");
 		System.out.println("Customer ID = " + customerId);
+		
 		int deleteStatus = 0;
+	    customerRegistration = (CustomerRegistration) session.getAttribute("customerRegistration");
 		
 		if(customerId != "") {
 			System.out.println("Customer Id not empty...");
-			deleteStatus = viewApplicationService.deleteApplication(request, response, customerId);
+			deleteStatus = customerApplicationService.deleteApplication(request, response, session, customerId);
+		}
+		
+		if (deleteStatus == 1) {
+			customerRegistration = customerApplicationService.getRegistrationDetails(request, response, session, customerId);
 		}
 		
 		model.addAttribute("deleteStatus", deleteStatus);
+		model.addAttribute("customerId", customerId);
+		model.addAttribute("registration", customerRegistration);
+		model.addAttribute("contact", session.getAttribute("customerContact"));
+		model.addAttribute("application", session.getAttribute("customerApplication"));
+		model.addAttribute("applicant", session.getAttribute("applicant"));
 		
-		return "/actions/showApplication";
+		return SHOW_APPLICATION_PAGE;
+		//return "redirect:gcl/actions/showApplication";
 	}
 	
-	@RequestMapping(value = "/skipSubmission", method = RequestMethod.POST)
+	@RequestMapping(value = "/skipFromSubmission", method = RequestMethod.POST)
 	public String skipSubmission(HttpServletRequest request,
 			HttpServletResponse response,
+			HttpSession session, 
 			@RequestParam("customerId") String customerId,
 			Model model) {
 		
@@ -90,13 +147,42 @@ public class ViewActionController {
 		int skipStatus = 0;
 		
 		if (customerId != "") {
-			skipStatus = viewApplicationService.skipSubmission(request, response, customerId);
+			skipStatus = customerApplicationService.skipFromSubmission(request, response, session, customerId);
 		}
-		System.out.println("Controller - Skip Status is " + skipStatus);
 		
 		model.addAttribute("skipStatus", skipStatus);
+		model.addAttribute("customerId", customerId);
+		model.addAttribute("registration", session.getAttribute("customerRegistration"));
+		model.addAttribute("contact", session.getAttribute("customerContact"));
+		model.addAttribute("application", session.getAttribute("customerApplication"));
+		model.addAttribute("applicant", session.getAttribute("applicant"));
 		
-		return "/actions/showApplication";
+		return SHOW_APPLICATION_PAGE;
+	}
+	
+	@RequestMapping(value = "/addToSubmission", method = RequestMethod.POST)
+	public String addToSubmission(HttpServletRequest request, 
+			HttpServletResponse response,
+			HttpSession session,
+			@RequestParam("customerId") String customerId, 
+			Model model) {
+		
+		int addSubmissionStatus = 0;
+				
+		if (customerId != "") {
+			addSubmissionStatus = customerApplicationService.addToSubmission(request, response, session, customerId);
+		}
+		
+		model.addAttribute("addSubmissionStatus", addSubmissionStatus);
+		
+		model.addAttribute("customerId", customerId);
+		model.addAttribute("registration", session.getAttribute("customerRegistration"));
+		model.addAttribute("contact", session.getAttribute("customerContact"));
+		model.addAttribute("application", session.getAttribute("customerApplication"));
+		model.addAttribute("applicant", session.getAttribute("applicant"));
+		
+		
+		return SHOW_APPLICATION_PAGE;
 	}
 
 }
